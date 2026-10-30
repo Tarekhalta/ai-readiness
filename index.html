@@ -3,286 +3,54 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Free bilingual (English/Arabic) tool that scores your organization's AI readiness across six areas and gives your top three priorities. For companies, NGOs, schools, universities and public bodies. By Tarek Halteh.">
-<style>:root{color-scheme:light}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
-<title>AI Readiness Assessment</title>
+<meta name="description" content="Free English/Arabic AI tools for companies, NGOs, schools and public bodies in MENA. By Tarek Halteh.">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>AI Tools by Tarek Halteh</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: question ledger on the left, sticky scorecard on the right; stacks on phones */
-:root{
-  --paper:#f5f7f8; --card:#ffffff; --ink:#14232f; --muted:#5a6a75; --line:#d9e1e6;
-  --accent:#0f6b74; --accent-soft:#dcefef; --mark:#c9822b;
-  --lo:#b8483a; --mid:#c9822b; --hi:#2f7d4f;
-  --display:"Familjen Grotesk","IBM Plex Sans Arabic",system-ui,sans-serif;
-  --body:"IBM Plex Sans","IBM Plex Sans Arabic",system-ui,sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,monospace;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --paper:#0f171d; --card:#16212a; --ink:#e6edf1; --muted:#9aabb6; --line:#28363f;
-  --accent:#4fb3ba; --accent-soft:#173439; --mark:#e0a35a; --lo:#e07a6c; --mid:#e0a35a; --hi:#5fbf86; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --paper:#0f171d; --card:#16212a; --ink:#e6edf1; --muted:#9aabb6; --line:#28363f;
-  --accent:#4fb3ba; --accent-soft:#173439; --mark:#e0a35a; --lo:#e07a6c; --mid:#e0a35a; --hi:#5fbf86; color-scheme:dark}
-body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
-body.ar{font-family:"IBM Plex Sans Arabic",var(--body)}
-.wrap{max-width:1120px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:24px}
-.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
-.ar .eyebrow{letter-spacing:0;text-transform:none;font-family:inherit;font-weight:500}
-h1{font-family:var(--display);font-size:clamp(28px,4.4vw,44px);line-height:1.08;margin:6px 0 10px;text-wrap:balance;max-width:20ch}
-.ar h1{font-family:"IBM Plex Sans Arabic",sans-serif;font-weight:700;line-height:1.3}
-.lede{color:var(--muted);max-width:62ch;margin:0}
-.controls{display:flex;gap:8px;flex-wrap:wrap}
-button{font:inherit;cursor:pointer}
-.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:8px;font-weight:500}
-.btn:hover{border-color:var(--accent)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--paper)}
-button:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
-.sector{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-.sector-label{font-size:13px;font-weight:600;color:var(--muted)}
-.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 14px;font-size:13px}
-.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper);font-weight:600}
-.note{font-size:13px;background:var(--accent-soft);color:var(--ink);padding:10px 14px;border-radius:8px;margin-bottom:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}
-.grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:28px;align-items:start}
-@media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}}
-.dim{margin-bottom:26px}
-.dim-head{display:flex;align-items:baseline;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:6px}
-.dim-head h2{font-family:var(--display);font-size:19px;margin:0}
-.ar .dim-head h2{font-family:inherit;font-weight:700}
-.dim-num{font-family:var(--mono);font-size:12px;color:var(--muted)}
-.dim-score{margin-inline-start:auto;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
-.q{padding:12px 0;border-bottom:1px dashed var(--line);display:grid;gap:8px}
-.q p{margin:0}
-.opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-@media (max-width:480px){.opts{grid-template-columns:repeat(2,1fr)}}
-.opt{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:7px;padding:7px 6px;font-size:13px;text-align:center}
-.opt[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--paper);font-weight:600}
-aside.card{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;display:grid;gap:18px}
-@media (max-width:880px){aside.card{position:static}}
-.score-row{display:flex;align-items:center;gap:18px}
-.ring{width:108px;height:108px;flex:none}
-.ring text{font-family:var(--mono);fill:var(--ink)}
-.level{font-family:var(--display);font-size:22px;margin:0}
-.ar .level{font-family:inherit;font-weight:700}
-.level-sub{color:var(--muted);font-size:13px;margin:2px 0 0}
-.bars{display:grid;gap:10px}
-.bar-label{display:flex;justify-content:space-between;font-size:13px;gap:8px}
-.bar-label span:last-child{font-family:var(--mono);font-variant-numeric:tabular-nums}
-.track{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
-.fill{height:100%;border-radius:4px;transition:width .4s ease}
-.ticks{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);direction:ltr}
-h3{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:600}
-.ar h3{letter-spacing:0;text-transform:none}
-.recs{display:grid;gap:10px;margin:0;padding:0;list-style:none}
-.recs li{font-size:14px;padding-inline-start:12px;border-inline-start:3px solid var(--mark)}
-.recs b{display:block;font-size:13px}
-.tip{font-size:13px;background:var(--accent-soft);padding:10px 12px;border-radius:8px;margin:0}
-.tip b{display:block;font-size:12px;color:var(--accent)}
-.cta{border-top:1px solid var(--line);padding-top:16px;font-size:14px}
-.cta a{color:var(--accent);font-weight:600}
-.counter{font-size:12px;color:var(--muted);font-family:var(--mono)}
-footer{margin-top:40px;color:var(--muted);font-size:12px;max-width:80ch}
-@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+:root{--bg:#f3f7f6;--card:#fff;--ink:#18302e;--muted:#5e7472;--line:#dbe6e4;--soft:#e7f2f0;--accent:#0f7a72;--accent-ink:#fff;--sun:#f6c453;--sun-soft:#fdf3d9}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1918;--card:#172423;--ink:#e7f1ef;--muted:#9db3b0;--line:#294040;--soft:#1d3331;--accent:#4cc3b5;--accent-ink:#0f1918;--sun-soft:#3a3220;color-scheme:dark}}
+body{background:var(--bg);color:var(--ink);font-family:"Rubik",system-ui,"Segoe UI",Tahoma,sans-serif;font-size:16px;line-height:1.55}
+.wrap{max-width:920px;margin:0 auto;padding-block:48px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.pill{display:inline-block;background:var(--sun-soft);font-size:13px;font-weight:500;padding:5px 12px;border-radius:999px}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.12;margin:12px 0 10px;font-weight:700;text-wrap:balance}
+.lede{color:var(--muted);max-width:58ch;margin:0 0 32px;font-size:17px}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+a.tool{display:flex;flex-direction:column;gap:10px;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:24px;color:inherit;text-decoration:none}
+a.tool:hover{border-color:var(--accent)}
+a.tool:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+a.tool svg{width:34px;height:34px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+a.tool h2{margin:0;font-size:21px;font-weight:600}
+a.tool p{margin:0;color:var(--muted);font-size:15px}
+a.tool .go{margin-top:auto;padding-top:8px;color:var(--accent);font-weight:600}
+.ar{font-size:14px;color:var(--muted)}
+footer{margin-top:40px;font-size:14px;color:var(--muted)}
+footer a{color:var(--ink);font-weight:600}
 </style>
 </head>
 <body>
-
-<div class="wrap" id="app">
-  <header class="top">
-    <div>
-      <div class="eyebrow" data-t="eyebrow"></div>
-      <h1 data-t="title"></h1>
-      <p class="lede" data-t="lede"></p>
-    </div>
-    <div class="controls">
-      <button class="btn" id="langBtn" type="button"></button>
-    </div>
-  </header>
-
-  <div class="sector" role="group" aria-labelledby="sectorLabel">
-    <span class="sector-label" id="sectorLabel" data-t="sectorQ"></span>
-    <span id="chips" style="display:flex;gap:6px;flex-wrap:wrap"></span>
+<div class="wrap">
+  <span class="pill">Free tools · English &amp; العربية</span>
+  <h1>Practical AI tools for teams in MENA</h1>
+  <p class="lede">Free tools for companies, NGOs, schools and public bodies working out how to use AI well. No sign-up, nothing stored. Each tool works in English and Arabic.</p>
+  <div class="tools">
+    <a class="tool" href="ai-readiness/">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v8l5 3"/></svg>
+      <h2>AI Readiness Assessment</h2>
+      <p>18 quick questions. Get a readiness score across six areas and the three things to work on first.</p>
+      <span class="ar">ما مدى جاهزية مؤسستك للذكاء الاصطناعي؟</span>
+      <span class="go">Take the assessment →</span>
+    </a>
+    <a class="tool" href="time-savings/">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M8 15h2M12 15h2M16 11v4"/></svg>
+      <h2>AI Time-Savings Calculator</h2>
+      <p>Pick your team's repetitive tasks and see the hours and money AI could save each year, after tool costs.</p>
+      <span class="ar">كم من الوقت يمكن أن يعيده الذكاء الاصطناعي لفريقك؟</span>
+      <span class="go">Calculate my savings →</span>
+    </a>
   </div>
-
-  <div class="note" id="sampleNote">
-    <span data-t="sample"></span>
-    <button class="btn primary" id="resetBtn" type="button" data-t="reset"></button>
-  </div>
-
-  <div class="grid">
-    <main id="questions"></main>
-    <aside class="card" id="results">
-      <div class="score-row">
-        <svg class="ring" viewBox="0 0 108 108" aria-hidden="true">
-          <circle cx="54" cy="54" r="46" fill="none" stroke="var(--line)" stroke-width="10"/>
-          <circle id="ringArc" cx="54" cy="54" r="46" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round" transform="rotate(-90 54 54)" stroke-dasharray="289" stroke-dashoffset="289"/>
-          <text id="ringNum" x="54" y="60" text-anchor="middle" font-size="24">0</text>
-        </svg>
-        <div>
-          <div class="counter" id="counter"></div>
-          <p class="level" id="level"></p>
-          <p class="level-sub" id="levelSub"></p>
-        </div>
-      </div>
-      <div>
-        <h3 data-t="byArea"></h3>
-        <div class="bars" id="bars"></div>
-        <div class="ticks"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
-      </div>
-      <div>
-        <h3 data-t="priorities"></h3>
-        <ul class="recs" id="recs"></ul>
-      </div>
-      <p class="tip" id="tip"></p>
-      <button class="btn" id="copyBtn" type="button" data-t="copy"></button>
-      <div class="cta">
-        <span data-t="ctaText"></span>
-        <a href="https://tarekhalteh.com" target="_blank" rel="noopener">tarekhalteh.com</a>
-      </div>
-    </aside>
-  </div>
-  <footer data-t="footer"></footer>
+  <footer>Built by Tarek Halteh, marketing and communications consultant in Amman. <a href="https://tarekhalteh.com">tarekhalteh.com</a></footer>
 </div>
-
-<script>
-const T={
- en:{eyebrow:"Free tool · Any organization · MENA",title:"How ready is your organization for AI?",
-  lede:"Answer 18 questions across six areas. You get an instant readiness score, a breakdown by area, and the three priorities to act on first. Works for companies, NGOs, schools and universities, and public institutions. Takes about 5 minutes.",
-  sectorQ:"Your sector:",
-  sample:"Showing example answers so you can see how it works.",reset:"Start my own assessment",
-  byArea:"Score by area",priorities:"Your top priorities",copy:"Copy my results",copied:"Copied",
-  ctaText:"Want help turning these results into an AI plan for your organization? Built by Tarek Halteh —",
-  footer:"Scores are indicative and based on self-reported answers. Built by Tarek Halteh, drawing on 14 years in SaaS, e-commerce, FMCG and donor-funded development programs in MENA.",
-  opts:["Not yet","Starting","Partly","Fully"],answered:"answered",lang:"العربية",tipHead:"For your sector",
-  allGood:"No area is below 75. Keep scaling what already works and share it.",
-  levels:[["Emerging","AI is already in use, but without a plan."],["Developing","Pieces are in place; they need to connect."],["Established","Solid foundations. Time to scale what works."],["Leading","A model for others. Keep sharing what you learn."]]},
- ar:{eyebrow:"أداة مجانية · لأي مؤسسة · الشرق الأوسط وشمال أفريقيا",title:"ما مدى جاهزية مؤسستك للذكاء الاصطناعي؟",
-  lede:"أجب عن 18 سؤالاً في ستة محاور، واحصل فوراً على درجة الجاهزية وتفصيل لكل محور وأهم ثلاث أولويات للبدء بها. مناسبة للشركات والمنظمات غير الحكومية والمدارس والجامعات والمؤسسات العامة. تستغرق نحو 5 دقائق.",
-  sectorQ:"قطاعك:",
-  sample:"نعرض إجابات توضيحية لترى كيف تعمل الأداة.",reset:"ابدأ تقييمي الخاص",
-  byArea:"الدرجة حسب المحور",priorities:"أولوياتك الرئيسية",copy:"نسخ النتائج",copied:"تم النسخ",
-  ctaText:"هل تريد مساعدة في تحويل هذه النتائج إلى خطة ذكاء اصطناعي لمؤسستك؟ من إعداد طارق الحلتة —",
-  footer:"الدرجات استرشادية وتعتمد على إجابات ذاتية. من إعداد طارق الحلتة، استناداً إلى 14 عاماً من الخبرة في البرمجيات والتجارة الإلكترونية والسلع الاستهلاكية وبرامج التنمية الممولة من المانحين في المنطقة.",
-  opts:["ليس بعد","في البداية","جزئياً","بالكامل"],answered:"تمت الإجابة",lang:"English",tipHead:"لقطاعك",
-  allGood:"لا يوجد محور أقل من 75. واصلوا توسيع ما ينجح وشاركوه.",
-  levels:[["ناشئة","الذكاء الاصطناعي مستخدم بالفعل، لكن دون خطة."],["قيد التطوير","بعض العناصر موجودة وتحتاج إلى الربط بينها."],["راسخة","أسس متينة. حان وقت توسيع ما ينجح."],["رائدة","نموذج يُحتذى به. استمروا في مشاركة ما تتعلمونه."]]}
-};
-const SECTORS=[
- {id:"biz",en:"Company / SME",ar:"شركة / منشأة صغيرة ومتوسطة",
-  tip:["Start where money is measurable: customer replies, sales follow-up and marketing content. Track hours saved and response times from week one.","ابدأوا حيث يمكن قياس العائد: الرد على العملاء ومتابعة المبيعات والمحتوى التسويقي. قيسوا الساعات الموفّرة وسرعة الاستجابة من الأسبوع الأول."]},
- {id:"ngo",en:"NGO / development program",ar:"منظمة غير حكومية / برنامج تنموي",
-  tip:["Check your donor's rules before using AI on reports or beneficiary data. Good first uses: drafting success stories, translating materials and summarizing M&E data.","راجعوا شروط الجهة المانحة قبل استخدام الذكاء الاصطناعي في التقارير أو بيانات المستفيدين. استخدامات أولى مناسبة: صياغة قصص النجاح وترجمة المواد وتلخيص بيانات المتابعة والتقييم."]},
- {id:"edu",en:"School / university",ar:"مدرسة / جامعة",
-  tip:["Students are already using AI. A clear course-level policy and redesigned assessments matter more than detection software.","الطلبة يستخدمون الذكاء الاصطناعي بالفعل. السياسة الواضحة على مستوى المساق وإعادة تصميم التقييم أهم من برامج الكشف."]},
- {id:"gov",en:"Government / public body",ar:"جهة حكومية / مؤسسة عامة",
-  tip:["Begin with internal, low-risk tasks such as drafting, translation and document search before anything citizen-facing. Keep a human sign-off on every decision.","ابدأوا بمهام داخلية منخفضة المخاطر مثل الصياغة والترجمة والبحث في الوثائق قبل أي خدمة موجهة للمواطنين. أبقوا اعتماداً بشرياً لكل قرار."]}
-];
-const D=[
- {en:"Strategy & leadership",ar:"الاستراتيجية والقيادة",q:[
-  ["Leadership has named AI as a priority for the organization.","حددت القيادة الذكاء الاصطناعي كأولوية للمؤسسة."],
-  ["A specific person or team is responsible for AI.","هناك شخص أو فريق محدد مسؤول عن الذكاء الاصطناعي."],
-  ["There is time or budget set aside for AI work.","هناك وقت أو ميزانية مخصصة لأعمال الذكاء الاصطناعي."]],
-  low:["Name an AI lead and give them a 90-day mandate, a small budget and two problems to solve.","عيّنوا مسؤولاً عن الذكاء الاصطناعي بتفويض لمدة 90 يوماً وميزانية صغيرة ومشكلتين محددتين لحلهما."],
-  mid:["Turn leadership interest into a short written AI roadmap with owners and targets.","حوّلوا اهتمام القيادة إلى خارطة طريق مكتوبة قصيرة بمسؤولين وأهداف واضحة."]},
- {en:"Policy & governance",ar:"السياسات والحوكمة",q:[
-  ["There is a written policy on how staff may use AI.","توجد سياسة مكتوبة لكيفية استخدام الموظفين للذكاء الاصطناعي."],
-  ["Staff know which tasks AI is allowed and not allowed for.","يعرف الموظفون المهام المسموح والممنوع استخدام الذكاء الاصطناعي فيها."],
-  ["AI-produced work is reviewed by a person before it goes out.","تتم مراجعة ما ينتجه الذكاء الاصطناعي من قبل شخص قبل اعتماده أو نشره."]],
-  low:["Publish a one-page AI use policy this month: allowed uses, banned uses, and who to ask.","انشروا هذا الشهر سياسة من صفحة واحدة: الاستخدامات المسموحة والممنوعة ومن يُسأل عند الشك."],
-  mid:["Add review rules for high-stakes outputs such as public statements, reports and decisions about people.","أضيفوا قواعد مراجعة للمخرجات الحساسة مثل البيانات العامة والتقارير والقرارات المتعلقة بالأشخاص."]},
- {en:"People & skills",ar:"الأفراد والمهارات",q:[
-  ["Staff have received practical AI training.","تلقّى الموظفون تدريباً عملياً على الذكاء الاصطناعي."],
-  ["Some teams use AI in their daily work.","تستخدم بعض الفرق الذكاء الاصطناعي في عملها اليومي."],
-  ["People share AI tips and examples with each other.","يتبادل الموظفون النصائح والأمثلة حول الذكاء الاصطناعي."]],
-  low:["Run a hands-on workshop using your own real documents and tasks, starting with volunteer champions.","نظّموا ورشة عملية على وثائقكم ومهامكم الحقيقية، بدءاً بالمتطوعين المتحمسين."],
-  mid:["Set up a monthly show-and-tell where teams share one AI workflow that saved them time.","خصصوا لقاءً شهرياً تعرض فيه كل فرقة طريقة عمل بالذكاء الاصطناعي وفّرت عليها الوقت."]},
- {en:"Use cases & results",ar:"حالات الاستخدام والنتائج",q:[
-  ["You have listed the tasks where AI could help most.","حددتم المهام التي يمكن أن يساعد فيها الذكاء الاصطناعي أكثر من غيرها."],
-  ["At least one AI pilot has been tested on real work.","تمت تجربة مشروع تجريبي واحد على الأقل على عمل حقيقي."],
-  ["You measure the results of AI use, such as time saved or quality.","تقيسون نتائج استخدام الذكاء الاصطناعي، مثل الوقت الموفّر أو الجودة."]],
-  low:["List your 10 most repetitive tasks, pick the two that eat the most hours, and pilot AI on them.","اكتبوا أكثر 10 مهام تكراراً، واختاروا المهمتين الأكثر استهلاكاً للوقت، وجرّبوا الذكاء الاصطناعي عليهما."],
-  mid:["Measure each pilot before and after, then scale the ones that clearly save time or improve quality.","قيسوا كل تجربة قبل وبعد، ثم وسّعوا ما يوفّر الوقت أو يحسّن الجودة بوضوح."]},
- {en:"Tools & data",ar:"الأدوات والبيانات",q:[
-  ["Staff have access to approved AI tools.","يتوفر للموظفين وصول إلى أدوات ذكاء اصطناعي معتمدة."],
-  ["The tools work well in Arabic as well as English.","تعمل الأدوات بشكل جيد باللغة العربية إلى جانب الإنجليزية."],
-  ["Your documents and data are organized enough for AI to use.","وثائقكم وبياناتكم منظمة بما يكفي ليستفيد منها الذكاء الاصطناعي."]],
-  low:["Choose one approved tool for everyone, and test it in Arabic on your own documents before rolling out.","اختاروا أداة معتمدة واحدة للجميع، واختبروها بالعربية على وثائقكم قبل التعميم."],
-  mid:["Clean up and centralize key documents (templates, reports, FAQs) so AI tools can work from them.","نظّموا الوثائق الأساسية وجمّعوها (القوالب والتقارير والأسئلة الشائعة) لتعمل عليها أدوات الذكاء الاصطناعي."]},
- {en:"Privacy, ethics & risk",ar:"الخصوصية والأخلاقيات والمخاطر",q:[
-  ["There are rules on what personal or sensitive data can go into AI tools.","توجد قواعد حول البيانات الشخصية أو الحساسة التي يجوز إدخالها في أدوات الذكاء الاصطناعي."],
-  ["AI vendors are checked for privacy and security.","يتم التحقق من مزوّدي الذكاء الاصطناعي من حيث الخصوصية والأمن."],
-  ["Bias and fairness are considered when AI affects people.","يُراعى التحيّز والعدالة عندما يؤثر الذكاء الاصطناعي على الأشخاص."]],
-  low:["Issue a one-line rule today: no personal, client or beneficiary data in public AI tools.","أصدروا اليوم قاعدة من سطر واحد: لا بيانات شخصية أو بيانات عملاء أو مستفيدين في أدوات الذكاء الاصطناعي العامة."],
-  mid:["Add an AI check to procurement covering where data is stored, whether it trains the model, and bias.","أضيفوا فحصاً للذكاء الاصطناعي في المشتريات يشمل مكان تخزين البيانات واستخدامها في تدريب النموذج والتحيّز."]}
-];
-const SAMPLE=[2,1,0, 1,1,0, 1,2,0, 1,1,0, 2,1,1, 0,0,0];
-let lang="en", sector="biz", answers=SAMPLE.slice(), isSample=true;
-try{const l=localStorage.getItem("air-lang"); if(l==="ar"||l==="en") lang=l;}catch(e){}
-
-const $=s=>document.querySelector(s);
-const L=()=>lang==="en"?0:1;
-const dimPct=i=>{const a=answers.slice(i*3,i*3+3).filter(v=>v!=null);return a.length?Math.round(a.reduce((s,v)=>s+v,0)/(a.length*3)*100):null};
-const color=p=>p==null?"var(--line)":p<50?"var(--lo)":p<75?"var(--mid)":"var(--hi)";
-
-function buildChips(){
-  $("#chips").innerHTML=SECTORS.map(s=>`<button type="button" class="chip" id="sec-${s.id}" data-s="${s.id}" aria-pressed="${s.id===sector}">${s[lang]}</button>`).join("");
-}
-function buildQuestions(){
-  const t=T[lang]; let h="";
-  D.forEach((d,i)=>{
-    h+=`<section class="dim"><div class="dim-head"><span class="dim-num">${String(i+1).padStart(2,"0")}</span><h2>${d[lang]}</h2><span class="dim-score" id="ds${i}"></span></div>`;
-    d.q.forEach((q,j)=>{const k=i*3+j;
-      h+=`<div class="q"><p id="ql${k}">${q[L()]}</p><div class="opts" role="group" aria-labelledby="ql${k}">`+
-      t.opts.map((o,v)=>`<button type="button" class="opt" id="o${k}_${v}" data-k="${k}" data-v="${v}" aria-pressed="${answers[k]===v}">${o}</button>`).join("")+`</div></div>`;});
-    h+=`</section>`;});
-  $("#questions").innerHTML=h;
-}
-function render(){
-  const t=T[lang];
-  document.documentElement.lang=lang; document.documentElement.dir=lang==="ar"?"rtl":"ltr";
-  document.body.classList.toggle("ar",lang==="ar");
-  document.querySelectorAll("[data-t]").forEach(el=>el.textContent=t[el.dataset.t]);
-  $("#langBtn").textContent=t.lang;
-  $("#sampleNote").hidden=!isSample;
-  buildChips(); buildQuestions(); update();
-}
-function update(){
-  const t=T[lang];
-  document.querySelectorAll(".opt").forEach(b=>b.setAttribute("aria-pressed",answers[+b.dataset.k]===+b.dataset.v));
-  document.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed",b.dataset.s===sector));
-  const n=answers.filter(v=>v!=null).length;
-  const pcts=D.map((_,i)=>dimPct(i));
-  const valid=pcts.filter(p=>p!=null);
-  const total=valid.length?Math.round(valid.reduce((a,b)=>a+b,0)/valid.length):0;
-  $("#counter").textContent=`${n}/18 ${t.answered}`;
-  $("#ringNum").textContent=n?total:"–";
-  $("#ringArc").setAttribute("stroke-dashoffset",289-289*total/100);
-  const lv=total<26?0:total<51?1:total<76?2:3;
-  $("#level").textContent=n?t.levels[lv][0]:"—";
-  $("#levelSub").textContent=n?t.levels[lv][1]:"";
-  pcts.forEach((p,i)=>{$("#ds"+i).textContent=p==null?"":p+"%"; $("#ds"+i).style.color=color(p)});
-  $("#bars").innerHTML=D.map((d,i)=>`<div><div class="bar-label"><span>${d[lang]}</span><span>${pcts[i]==null?"–":pcts[i]}</span></div><div class="track"><div class="fill" style="width:${pcts[i]||0}%;background:${color(pcts[i])}"></div></div></div>`).join("");
-  const order=D.map((d,i)=>({d,p:pcts[i]})).filter(x=>x.p!=null&&x.p<75).sort((a,b)=>a.p-b.p).slice(0,3);
-  $("#recs").innerHTML=order.length?order.map(x=>`<li><b>${x.d[lang]} · ${x.p}%</b>${(x.p<50?x.d.low:x.d.mid)[L()]}</li>`).join("")
-    :`<li>${n?t.allGood:(lang==="en"?"Answer a few questions to see your priorities.":"أجب عن بعض الأسئلة لترى أولوياتك.")}</li>`;
-  const s=SECTORS.find(x=>x.id===sector);
-  $("#tip").innerHTML=`<b>${t.tipHead}: ${s[lang]}</b>${s.tip[L()]}`;
-}
-$("#chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;sector=b.dataset.s;update();});
-$("#questions").addEventListener("click",e=>{const b=e.target.closest(".opt");if(!b)return;
-  if(isSample){isSample=false;answers=Array(18).fill(null);$("#sampleNote").hidden=true;}
-  const k=+b.dataset.k,v=+b.dataset.v; answers[k]=answers[k]===v?null:v; update();});
-$("#resetBtn").addEventListener("click",()=>{isSample=false;answers=Array(18).fill(null);render();window.scrollTo({top:0});});
-$("#langBtn").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";try{localStorage.setItem("air-lang",lang)}catch(e){};render();});
-$("#copyBtn").addEventListener("click",()=>{
-  const t=T[lang]; const pcts=D.map((_,i)=>dimPct(i)); const s=SECTORS.find(x=>x.id===sector);
-  const txt=`${t.title}\n${s[lang]}\n${$("#ringNum").textContent}/100 · ${$("#level").textContent}\n`+D.map((d,i)=>`${d[lang]}: ${pcts[i]??"–"}`).join("\n")+`\n\n${t.priorities}:\n`+[...document.querySelectorAll("#recs li")].map(li=>"• "+li.innerText.replace(/\n/," — ")).join("\n")+`\n\n${s.tip[L()]}\n\ntarekhalteh.com`;
-  const btn=$("#copyBtn");
-  navigator.clipboard.writeText(txt).then(()=>{btn.textContent=t.copied;setTimeout(()=>btn.textContent=t.copy,1500)}).catch(()=>{
-    const ta=document.createElement("textarea");ta.value=txt;btn.after(ta);ta.select();});
-});
-render();
-</script>
 </body>
 </html>

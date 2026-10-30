@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Free bilingual (English/Arabic) calculator: see how many hours and how much money AI could save your team each year. By Tarek Halteh.">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>AI Time-Savings Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: three guided steps on the left, a live result card on the right; stacks on phones */
+:root{
+  --bg:#f3f7f6; --card:#ffffff; --ink:#18302e; --muted:#5e7472; --line:#dbe6e4; --soft:#e7f2f0;
+  --accent:#0f7a72; --accent-ink:#ffffff; --sun:#f6c453; --sun-soft:#fdf3d9; --neg:#c0533f;
+  --font:"Rubik",system-ui,"Segoe UI",Tahoma,sans-serif;
+  --r:18px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1918; --card:#172423; --ink:#e7f1ef; --muted:#9db3b0; --line:#294040; --soft:#1d3331;
+  --accent:#4cc3b5; --accent-ink:#0f1918; --sun:#f6c453; --sun-soft:#3a3220; --neg:#ec8a75; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1918; --card:#172423; --ink:#e7f1ef; --muted:#9db3b0; --line:#294040; --soft:#1d3331;
+  --accent:#4cc3b5; --accent-ink:#0f1918; --sun:#f6c453; --sun-soft:#3a3220; --neg:#ec8a75; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55}
+.wrap{max-width:1140px;margin:0 auto;padding-block:28px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.pill{display:inline-block;background:var(--sun-soft);color:var(--ink);font-size:13px;font-weight:500;padding:5px 12px;border-radius:999px}
+h1{font-size:clamp(30px,4.6vw,46px);line-height:1.12;margin:12px 0 10px;font-weight:700;text-wrap:balance;max-width:18ch}
+.lede{color:var(--muted);max-width:56ch;margin:0;font-size:17px}
+.lang{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 16px;font-weight:500}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:28px;align-items:start}
+@media (max-width:940px){.grid{grid-template-columns:minmax(0,1fr)}}
+
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;margin-bottom:20px}
+.step-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px}
+.num{flex:none;width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:700}
+.step h2{font-size:21px;margin:2px 0 2px;font-weight:600}
+.step .hint{color:var(--muted);font-size:14px;margin:0}
+
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.field{display:grid;gap:6px;min-width:0}
+.field .lbl{font-size:14px;font-weight:500}
+.field .help{font-size:12.5px;color:var(--muted)}
+.stepper{display:flex;align-items:center;border:1px solid var(--line);border-radius:14px;background:var(--bg);overflow:hidden;max-width:240px}
+.stepper button{width:44px;height:44px;border:none;background:transparent;font-size:22px;font-weight:500;color:var(--accent);flex:none}
+.stepper button:hover{background:var(--soft)}
+.stepper input{flex:1;min-width:0;width:100%;border:none;background:transparent;text-align:center;font-size:17px;font-weight:600;padding:0;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stepper .unit{font-size:13px;color:var(--muted);padding-inline-end:4px}
+.cur{display:flex;gap:6px;flex-wrap:wrap}
+.cur button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 12px;font-size:14px}
+.cur button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg);font-weight:600}
+
+.picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.pick{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:start;border:1.5px solid var(--line);background:var(--bg);border-radius:14px;padding:14px;font-size:14px;font-weight:500;line-height:1.35;position:relative;min-height:96px}
+.pick:hover{border-color:var(--accent)}
+.pick svg{width:26px;height:26px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pick[aria-pressed="true"]{border-color:var(--accent);background:var(--soft)}
+.pick .tick{position:absolute;top:10px;inset-inline-end:10px;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:13px;color:transparent}
+.pick[aria-pressed="true"] .tick{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.pick.add{border-style:dashed;justify-content:center;align-items:center;color:var(--accent)}
+
+.chosen{display:grid;gap:12px}
+.empty{border:1.5px dashed var(--line);border-radius:14px;padding:22px;text-align:center;color:var(--muted);font-size:15px}
+.row{border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:14px;background:var(--bg)}
+.row-top{display:flex;align-items:center;gap:10px}
+.row-top svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.row-top input{flex:1;min-width:0;border:none;border-bottom:1px dashed var(--line);background:transparent;font-weight:600;font-size:16px;padding:4px 0}
+.row-top .x{border:none;background:none;color:var(--muted);font-size:14px;padding:4px 6px;border-radius:8px;flex:none}
+.row-top .x:hover{color:var(--neg);background:var(--card)}
+.row-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;align-items:end}
+.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+.seg button{flex:1;border:none;background:transparent;padding:10px 6px;font-size:13.5px;min-width:0}
+.seg button+button{border-inline-start:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.row-out{font-size:14px;color:var(--muted);background:var(--card);border-radius:10px;padding:8px 12px}
+.row-out b{color:var(--ink);font-weight:600}
+
+aside.result{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);display:grid;gap:14px}
+@media (max-width:940px){aside.result{position:static}}
+.hero{background:var(--accent);color:var(--accent-ink);border-radius:var(--r);padding:24px;display:grid;gap:8px}
+.hero .k{font-size:14px;opacity:.85}
+.hero .v{font-size:clamp(38px,5.4vw,52px);font-weight:700;line-height:1.05;font-variant-numeric:tabular-nums}
+.hero .v small{font-size:.42em;font-weight:500;margin-inline-start:6px}
+.hero p{margin:4px 0 0;font-size:15px;line-height:1.5}
+.hero.neg{background:var(--neg)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.tile .v{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.tile .k{font-size:13px;color:var(--muted)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:12px}
+.panel h3{font-size:15px;margin:0;font-weight:600}
+.bars{display:grid;gap:10px}
+.bar-label{display:flex;justify-content:space-between;font-size:13.5px;gap:8px}
+.bar-label span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.bar-label span:last-child{font-variant-numeric:tabular-nums;font-weight:600;flex:none}
+.track{height:10px;background:var(--soft);border-radius:6px;overflow:hidden}
+.fill{height:100%;background:var(--sun);border-radius:6px;transition:width .35s ease}
+.copy{border:none;background:var(--ink);color:var(--bg);border-radius:12px;padding:12px;font-weight:600}
+.method{font-size:12.5px;color:var(--muted);margin:0}
+.cta{font-size:14px;background:var(--sun-soft);border-radius:14px;padding:14px}
+.cta a{color:var(--ink);font-weight:700}
+footer{margin-top:36px;color:var(--muted);font-size:13px;max-width:80ch}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <span class="pill" data-t="pill"></span>
+      <h1 data-t="title"></h1>
+      <p class="lede" data-t="lede"></p>
+    </div>
+    <button class="lang" id="langBtn" type="button"></button>
+  </header>
+
+  <div class="grid">
+    <main>
+      <section class="step">
+        <div class="step-head"><span class="num">1</span><div><h2 data-t="s1"></h2><p class="hint" data-t="s1h"></p></div></div>
+        <div class="fields" id="teamFields"></div>
+      </section>
+
+      <section class="step">
+        <div class="step-head"><span class="num">2</span><div><h2 data-t="s2"></h2><p class="hint" data-t="s2h"></p></div></div>
+        <div class="picker" id="picker"></div>
+      </section>
+
+      <section class="step">
+        <div class="step-head"><span class="num">3</span><div><h2 data-t="s3"></h2><p class="hint" data-t="s3h"></p></div></div>
+        <div class="chosen" id="chosen"></div>
+      </section>
+    </main>
+
+    <aside class="result" aria-live="polite">
+      <div class="hero" id="hero">
+        <div class="k" data-t="netK"></div>
+        <div class="v" id="net"></div>
+        <p id="sentence"></p>
+      </div>
+      <div class="tiles">
+        <div class="tile"><div class="v" id="hours"></div><div class="k" data-t="hoursK"></div></div>
+        <div class="tile"><div class="v" id="perWeek"></div><div class="k" data-t="weekK"></div></div>
+        <div class="tile"><div class="v" id="fte"></div><div class="k" data-t="fteK"></div></div>
+        <div class="tile"><div class="v" id="roi"></div><div class="k" data-t="roiK"></div></div>
+      </div>
+      <div class="panel">
+        <h3 data-t="byTask"></h3>
+        <div class="bars" id="bars"></div>
+        <p class="method" id="method"></p>
+        <button class="copy" id="copyBtn" type="button" data-t="copy"></button>
+      </div>
+      <div class="cta"><span data-t="ctaText"></span> <a href="https://tarekhalteh.com" target="_blank" rel="noopener">tarekhalteh.com</a></div>
+    </aside>
+  </div>
+  <footer data-t="footer"></footer>
+</div>
+
+<script>
+const WEEKS=46; // working weeks per year after leave and public holidays
+const LEVELS=[20,40,60];
+const ICONS={
+ replies:'<path d="M4 5h16v11H8l-4 4z"/>',
+ social:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+ reports:'<path d="M5 20V10M12 20V4M19 20v-7"/>',
+ translate:'<circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.5 2.5 2.5 13.5 0 16M12 4c-2.5 2.5-2.5 13.5 0 16"/>',
+ meetings:'<rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/>',
+ proposals:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 13l2 2 3-4"/>',
+ data:'<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16M10 5v14"/>',
+ research:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>',
+ hr:'<circle cx="9" cy="8" r="3"/><path d="M3 19c0-3.3 2.7-5 6-5s6 1.7 6 5M16 5a3 3 0 0 1 0 6M21 19c0-2.3-1.3-3.8-3-4.5"/>',
+ custom:'<path d="M12 5v14M5 12h14"/>'
+};
+const T={
+ en:{pill:"Free tool · 3 minutes",title:"How much time could AI give back to your team?",
+  lede:"Pick the everyday tasks your team repeats each week. We'll show the hours AI could save and what that's worth in money each year, after paying for the tools.",
+  s1:"Tell us about your team",s1h:"Rough averages are fine.",
+  s2:"Which tasks eat up your week?",s2h:"Tap the ones your team does. Pick as many as you like.",
+  s3:"Adjust the details",s3h:"For each task, say how long it takes and how much AI could help.",
+  team:"People on the team",salary:"Average monthly salary",salaryH:"Per person, before deductions",weekHrs:"Working hours per week",
+  tool:"AI tool cost per person / month",toolH:"Business AI plans usually cost about $20–30 per person a month",currency:"Currency",
+  addOwn:"Add your own task",ownPh:"Name your task",remove:"Remove",
+  hrs:"Hours each week, per person",people:"People who do this",help:"How much can AI help?",lv:["A little","Some","A lot"],
+  rowOut:(h,v)=>`Saves about <b>${h} hours</b> a year, worth <b>${v}</b>`,
+  emptyRows:"Pick a task in step 2 and it will appear here.",
+  netK:"Your team could save each year",
+  sentence:(h,w,t,c)=>`That's <b>${h} hours</b> back every year, about ${w} hours a week, after paying ${t} ${c} a year for AI tools.`,
+  sentenceEmpty:"Pick a few tasks to see your numbers.",
+  negSentence:(t,c)=>`Right now the tools (${t} ${c}/year) cost more than the time saved. Try fewer people on the tool, or add the tasks that take the most time.`,
+  hoursK:"hours saved a year",weekK:"hours back each week",fteK:"full-time people freed up",roiK:"return on the tool cost",
+  byTask:"Where the savings come from",copy:"Copy my results",copied:"Copied!",
+  method:w=>`Hourly cost = monthly salary × 12 ÷ (hours per week × 52). Counted over ${w} working weeks a year. "A little / Some / A lot" = 20% / 40% / 60% of the task time.`,
+  ctaText:"Want help choosing the right AI tools and getting your team using them? Built by Tarek Halteh,",
+  footer:"These are estimates based on what you enter. Saved time only turns into money when your team puts it into more valuable work, so plan where those hours go.",
+  lang:"العربية"},
+ ar:{pill:"أداة مجانية · 3 دقائق",title:"كم من الوقت يمكن أن يعيده الذكاء الاصطناعي لفريقك؟",
+  lede:"اختر المهام اليومية التي يكررها فريقك كل أسبوع، وسنعرض لك الساعات التي يمكن توفيرها وقيمتها المالية سنوياً بعد دفع تكلفة الأدوات.",
+  s1:"أخبرنا عن فريقك",s1h:"المتوسطات التقريبية تكفي.",
+  s2:"ما المهام التي تستهلك أسبوعكم؟",s2h:"اضغط على المهام التي يقوم بها فريقك. اختر ما تشاء.",
+  s3:"عدّل التفاصيل",s3h:"لكل مهمة، حدد الوقت الذي تستغرقه ومدى مساعدة الذكاء الاصطناعي.",
+  team:"عدد أفراد الفريق",salary:"متوسط الراتب الشهري",salaryH:"للفرد، قبل الاقتطاعات",weekHrs:"ساعات العمل الأسبوعية",
+  tool:"تكلفة أداة الذكاء الاصطناعي للفرد شهرياً",toolH:"تكلّف خطط الأعمال عادةً نحو 20–30 دولاراً للفرد شهرياً",currency:"العملة",
+  addOwn:"أضف مهمة أخرى",ownPh:"اسم المهمة",remove:"حذف",
+  hrs:"الساعات أسبوعياً للفرد",people:"عدد من يقومون بها",help:"ما مدى مساعدة الذكاء الاصطناعي؟",lv:["قليلاً","بشكل متوسط","كثيراً"],
+  rowOut:(h,v)=>`توفّر نحو <b>${h} ساعة</b> سنوياً، بقيمة <b>${v}</b>`,
+  emptyRows:"اختر مهمة في الخطوة 2 وستظهر هنا.",
+  netK:"يمكن لفريقك توفير سنوياً",
+  sentence:(h,w,t,c)=>`أي <b>${h} ساعة</b> تعود إليكم كل عام، نحو ${w} ساعة أسبوعياً، بعد دفع ${t} ${c} سنوياً للأدوات.`,
+  sentenceEmpty:"اختر بعض المهام لترى أرقامك.",
+  negSentence:(t,c)=>`حالياً تكلفة الأدوات (${t} ${c} سنوياً) أعلى من قيمة الوقت الموفّر. جرّب عدداً أقل من المستخدمين، أو أضف المهام الأكثر استهلاكاً للوقت.`,
+  hoursK:"ساعة موفّرة سنوياً",weekK:"ساعة مستعادة أسبوعياً",fteK:"موظف بدوام كامل",roiK:"العائد على تكلفة الأدوات",
+  byTask:"مصدر التوفير",copy:"نسخ النتائج",copied:"تم النسخ!",
+  method:w=>`تكلفة الساعة = الراتب الشهري × 12 ÷ (الساعات الأسبوعية × 52). محسوبة على ${w} أسبوع عمل سنوياً. "قليلاً / متوسط / كثيراً" = 20% / 40% / 60% من وقت المهمة.`,
+  ctaText:"هل تريد مساعدة في اختيار أدوات الذكاء الاصطناعي المناسبة وتدريب فريقك عليها؟ من إعداد طارق الحلتة،",
+  footer:"هذه تقديرات مبنية على ما تدخله. الوقت الموفّر لا يتحول إلى قيمة مالية إلا إذا استثمره الفريق في عمل أعلى قيمة، فخطّطوا لكيفية استخدام هذه الساعات.",
+  lang:"English"}
+};
+const PRESETS=[
+ {k:"replies",en:"Answering customer messages & emails",ar:"الرد على رسائل العملاء والبريد",hrs:6,lv:1},
+ {k:"social",en:"Writing social media posts",ar:"كتابة منشورات التواصل الاجتماعي",hrs:4,lv:2},
+ {k:"reports",en:"Preparing reports",ar:"إعداد التقارير",hrs:3,lv:1},
+ {k:"translate",en:"Translating Arabic ↔ English",ar:"الترجمة بين العربية والإنجليزية",hrs:3,lv:2},
+ {k:"meetings",en:"Meeting notes & follow-ups",ar:"محاضر الاجتماعات والمتابعات",hrs:2,lv:2},
+ {k:"proposals",en:"Proposals & quotations",ar:"العروض وعروض الأسعار",hrs:3,lv:1},
+ {k:"data",en:"Data entry & spreadsheets",ar:"إدخال البيانات والجداول",hrs:5,lv:0},
+ {k:"research",en:"Research & summarizing",ar:"البحث والتلخيص",hrs:3,lv:1},
+ {k:"hr",en:"Job posts & CV screening",ar:"إعلانات الوظائف وفرز السير الذاتية",hrs:2,lv:1}
+];
+const CURS=["JOD","USD","SAR","AED","EGP"];
+let lang="en", uid=0;
+const S={team:5,salary:700,weekHrs:40,tool:15,currency:"JOD",tasks:[]};
+[["replies",2],["social",1],["reports",3],["translate",2],["meetings",5]].forEach(([k,p])=>{const pr=PRESETS.find(x=>x.k===k);S.tasks.push({id:++uid,k,hrs:pr.hrs,people:p,lv:pr.lv})});
+try{const l=localStorage.getItem("ats-lang"); if(l==="ar"||l==="en") lang=l;}catch(e){}
+
+const $=s=>document.querySelector(s);
+const fmt=n=>Math.round(n).toLocaleString("en-US");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const num=v=>{const n=parseFloat(v);return isFinite(n)&&n>0?n:0};
+const icon=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[k]||ICONS.custom}</svg>`;
+const name=t=>t.k==="custom"?t.name:(PRESETS.find(p=>p.k===t.k)||{})[lang];
+const stepper=(id,val,step,unit)=>`<div class="stepper"><button type="button" data-step="-${step}" data-for="${id}" aria-label="−">−</button><input type="number" inputmode="decimal" id="${id}" value="${val}" min="0" step="${step}">${unit?`<span class="unit">${unit}</span>`:""}<button type="button" data-step="${step}" data-for="${id}" aria-label="+">+</button></div>`;
+
+function calc(){
+  const hourly=num(S.weekHrs)?num(S.salary)*12/(num(S.weekHrs)*52):0;
+  const rows=S.tasks.map(t=>{const h=num(t.hrs)*num(t.people)*LEVELS[t.lv]/100*WEEKS;return {t,h,v:h*hourly}});
+  const hours=rows.reduce((a,r)=>a+r.h,0), gross=hours*hourly, tools=num(S.tool)*num(S.team)*12;
+  return {rows,hours,gross,tools,net:gross-tools,fte:hours/((num(S.weekHrs)||40)*WEEKS),roi:tools?gross/tools:null,perWeek:hours/WEEKS};
+}
+function buildTeam(){
+  const t=T[lang];
+  $("#teamFields").innerHTML=
+   `<div class="field"><label class="lbl" for="team">${t.team}</label>${stepper("team",S.team,1)}</div>
+    <div class="field"><label class="lbl" for="salary">${t.salary}</label>${stepper("salary",S.salary,50,S.currency)}<span class="help">${t.salaryH}</span></div>
+    <div class="field"><label class="lbl" for="weekHrs">${t.weekHrs}</label>${stepper("weekHrs",S.weekHrs,1)}</div>
+    <div class="field"><label class="lbl" for="tool">${t.tool}</label>${stepper("tool",S.tool,1,S.currency)}<span class="help">${t.toolH}</span></div>
+    <div class="field"><span class="lbl">${t.currency}</span><div class="cur" role="group">${CURS.map(c=>`<button type="button" data-cur="${c}" aria-pressed="${c===S.currency}">${c}</button>`).join("")}</div></div>`;
+}
+function buildPicker(){
+  const t=T[lang];
+  $("#picker").innerHTML=PRESETS.map(p=>`<button type="button" class="pick" data-pick="${p.k}" aria-pressed="${S.tasks.some(x=>x.k===p.k)}"><span class="tick">✓</span>${icon(p.k)}<span>${p[lang]}</span></button>`).join("")+
+   `<button type="button" class="pick add" data-pick="custom">${icon("custom")}<span>${t.addOwn}</span></button>`;
+}
+function buildRows(){
+  const t=T[lang];
+  $("#chosen").innerHTML=S.tasks.length?S.tasks.map(x=>`
+   <div class="row" data-id="${x.id}">
+    <div class="row-top">${icon(x.k)}${x.k==="custom"?`<input type="text" id="name${x.id}" data-f="name" value="${esc(x.name)}" placeholder="${t.ownPh}" aria-label="${t.ownPh}">`:`<strong style="flex:1;min-width:0">${name(x)}</strong>`}<button type="button" class="x" data-rm="${x.id}">✕ ${t.remove}</button></div>
+    <div class="row-fields">
+     <div class="field"><label class="lbl" for="hrs${x.id}">${t.hrs}</label>${stepper("hrs"+x.id,x.hrs,0.5)}</div>
+     <div class="field"><label class="lbl" for="people${x.id}">${t.people}</label>${stepper("people"+x.id,x.people,1)}</div>
+     <div class="field"><span class="lbl">${t.help}</span><div class="seg" role="group">${t.lv.map((l,i)=>`<button type="button" data-lv="${i}" aria-pressed="${x.lv===i}">${l}</button>`).join("")}</div></div>
+    </div>
+    <div class="row-out" id="out${x.id}"></div>
+   </div>`).join(""):`<div class="empty">${t.emptyRows}</div>`;
+}
+function render(){
+  const t=T[lang];
+  document.documentElement.lang=lang; document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+  document.querySelectorAll("[data-t]").forEach(el=>el.textContent=t[el.dataset.t]);
+  $("#langBtn").textContent=t.lang;
+  buildTeam(); buildPicker(); buildRows(); update();
+}
+function update(){
+  const t=T[lang], r=calc(), c=S.currency;
+  $("#net").innerHTML=`${fmt(Math.max(r.net,0))}<small>${c}</small>`;
+  $("#hero").classList.toggle("neg",r.net<0&&r.hours>0);
+  $("#sentence").innerHTML=!r.hours?t.sentenceEmpty:r.net<0?t.negSentence(fmt(r.tools),c):t.sentence(fmt(r.hours),r.perWeek.toFixed(0),fmt(r.tools),c);
+  $("#hours").textContent=fmt(r.hours);
+  $("#perWeek").textContent=r.perWeek.toFixed(1);
+  $("#fte").textContent=r.fte.toFixed(1);
+  $("#roi").textContent=r.roi==null?"–":`${r.roi.toFixed(1)}×`;
+  r.rows.forEach(x=>{const el=$("#out"+x.t.id); if(el) el.innerHTML=t.rowOut(fmt(x.h),`${fmt(x.v)} ${c}`)});
+  const max=Math.max(...r.rows.map(x=>x.v),1);
+  $("#bars").innerHTML=r.rows.length?[...r.rows].sort((a,b)=>b.v-a.v).map(x=>`<div><div class="bar-label"><span>${esc(name(x.t)||"—")}</span><span>${fmt(x.v)} ${c}</span></div><div class="track"><div class="fill" style="width:${x.v/max*100}%"></div></div></div>`).join(""):`<p class="method">${t.sentenceEmpty}</p>`;
+  $("#method").textContent=t.method(WEEKS);
+}
+function setVal(id,v){
+  if(S.hasOwnProperty(id)){S[id]=v;return}
+  const m=id.match(/^(hrs|people)(\d+)$/); if(m){const x=S.tasks.find(t=>t.id==m[2]); if(x) x[m[1]]=v;}
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  if(b.dataset.step){const inp=document.getElementById(b.dataset.for); let v=Math.max(0,(parseFloat(inp.value)||0)+parseFloat(b.dataset.step)); v=Math.round(v*10)/10; inp.value=v; setVal(inp.id,v); update(); return}
+  if(b.dataset.cur){S.currency=b.dataset.cur; buildTeam(); update(); return}
+  if(b.dataset.pick){const k=b.dataset.pick;
+    if(k==="custom"){const nt={id:++uid,k:"custom",name:"",hrs:2,people:1,lv:1};S.tasks.push(nt);buildRows();update();const i=document.getElementById("name"+nt.id);if(i)i.focus();return}
+    const i=S.tasks.findIndex(x=>x.k===k);
+    if(i>=0) S.tasks.splice(i,1); else {const p=PRESETS.find(x=>x.k===k);S.tasks.push({id:++uid,k,hrs:p.hrs,people:1,lv:p.lv})}
+    b.setAttribute("aria-pressed",i<0); buildRows(); update(); return}
+  if(b.dataset.rm){S.tasks=S.tasks.filter(x=>x.id!=b.dataset.rm); buildPicker(); buildRows(); update(); return}
+  if(b.dataset.lv){const row=b.closest(".row"); const x=S.tasks.find(t=>t.id==row.dataset.id); x.lv=+b.dataset.lv; row.querySelectorAll("[data-lv]").forEach(s=>s.setAttribute("aria-pressed",s===b)); update(); return}
+});
+document.addEventListener("input",e=>{
+  const el=e.target;
+  if(el.dataset.f==="name"){const x=S.tasks.find(t=>t.id==el.closest(".row").dataset.id); x.name=el.value; update(); return}
+  if(el.type==="number"){setVal(el.id,el.value); update();}
+});
+$("#langBtn").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";try{localStorage.setItem("ats-lang",lang)}catch(e){};render();});
+$("#copyBtn").addEventListener("click",()=>{
+  const t=T[lang], r=calc(), c=S.currency;
+  const txt=`${t.title}\n\n${t.netK}: ${fmt(r.net)} ${c}\n${fmt(r.hours)} ${t.hoursK}\n${r.perWeek.toFixed(1)} ${t.weekK}\n${r.fte.toFixed(1)} ${t.fteK}\n\n`+
+   r.rows.map(x=>`• ${name(x.t)}: ${fmt(x.h)} h → ${fmt(x.v)} ${c}`).join("\n")+`\n\ntarekhalteh.com`;
+  const btn=$("#copyBtn");
+  navigator.clipboard.writeText(txt).then(()=>{btn.textContent=t.copied;setTimeout(()=>btn.textContent=t.copy,1500)}).catch(()=>{
+    const ta=document.createElement("textarea");ta.value=txt;btn.after(ta);ta.select();});
+});
+render();
+</script>
+</body>
+</html>
