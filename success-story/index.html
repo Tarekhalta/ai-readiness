@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Success Story Builder</title>
+<meta name="description" content="Free English/Arabic tool that turns field notes into a donor-ready success story, with a short social version. By Tarek Halteh.">
+<meta property="og:title" content="Success Story Builder">
+<meta property="og:description" content="Turn field notes into a donor-ready success story in minutes. Free, English and Arabic, nothing stored.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap">
+<style>
+:root{
+  --page:#E9EDF2; --sheet:#FFFFFF; --ink:#1C2541; --muted:#5A6478; --line:#CDD4DE; --field:#F6F8FB;
+  --marker:#FFE066; --marker-ink:#1C2541; --ok:#2E7D5B; --warn:#B4651C;
+  --ui:"Bricolage Grotesque","IBM Plex Sans Arabic",system-ui,"Segoe UI",sans-serif;
+  --story:"Source Serif 4","Noto Naskh Arabic",Georgia,serif;
+}
+:root[dir="rtl"]{--ui:"IBM Plex Sans Arabic","Bricolage Grotesque",system-ui,sans-serif;--story:"Noto Naskh Arabic","Source Serif 4",serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#11162A; --sheet:#1A2139; --ink:#E6EAF3; --muted:#9AA4BA; --line:#2E3854; --field:#151B31;
+  --marker:#E9C84A; --marker-ink:#1C2541; --ok:#5CC195; --warn:#E6A15A; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.5}
+img{max-width:100%}
+[hidden]{display:none!important}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--marker);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto;padding:32px max(16px,env(safe-area-inset-right,0px)) 80px max(16px,env(safe-area-inset-left,0px))}
+
+/* Header */
+.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:28px}
+.top h1{font-size:clamp(32px,4.4vw,50px);line-height:1.04;font-weight:700;letter-spacing:-.02em;margin:0 0 10px;max-width:16ch}
+:root[dir="rtl"] .top h1{letter-spacing:0;line-height:1.25}
+.top p{margin:0;color:var(--muted);max-width:54ch;font-size:17px}
+.lang{border:1.5px solid var(--ink);background:transparent;border-radius:999px;padding:8px 18px;font-weight:600}
+.lang:hover{background:var(--ink);color:var(--page)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:32px;align-items:start}
+@media (max-width:980px){.grid{grid-template-columns:minmax(0,1fr)}}
+
+/* Form */
+.example{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--marker);color:var(--marker-ink);border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:15px}
+.example button{border:none;background:var(--marker-ink);color:#fff;border-radius:8px;padding:8px 14px;font-weight:600}
+fieldset{border:none;margin:0 0 14px;padding:20px 20px 16px;background:var(--sheet);border-radius:16px;display:grid;gap:14px}
+legend{float:inline-start;width:100%;padding:0;display:flex;gap:12px;align-items:baseline}
+legend .n{font-family:var(--story);font-size:30px;line-height:1;font-weight:700;color:var(--muted);min-width:22px}
+legend .lt{display:block;font-weight:600;font-size:18px}
+legend .lh{display:block;color:var(--muted);font-size:14px;font-weight:400}
+label{display:grid;gap:6px;font-size:14.5px;font-weight:500}
+label small{color:var(--muted);font-weight:400}
+input[type="text"],textarea,select{width:100%;border:1.5px solid var(--line);background:var(--field);border-radius:10px;padding:10px 12px;font-size:15.5px;font-weight:400}
+textarea{resize:vertical;min-height:84px;line-height:1.5}
+input:focus,textarea:focus,select:focus{border-color:var(--ink);outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--marker) 70%,transparent)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;width:max-content}
+.seg button{border:none;background:var(--field);padding:8px 16px;font-size:14.5px}
+.seg button+button{border-inline-start:1.5px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--page);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px dashed var(--line);background:transparent;border-radius:10px;padding:7px 12px;font-size:14px;text-align:start;max-width:100%}
+.chip:hover{border-color:var(--ink);border-style:solid}
+.check{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:14.5px}
+.check input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--ink);flex:none}
+.file{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.file label.btn{display:inline-block;border:1.5px solid var(--ink);border-radius:10px;padding:8px 14px;font-weight:600;cursor:pointer}
+.file input{position:absolute;width:1px;height:1px;opacity:0}
+.file .clear{border:none;background:none;color:var(--muted);text-decoration:underline;padding:0}
+
+/* Preview column */
+.preview{position:sticky;top:16px;display:grid;gap:14px}
+@media (max-width:980px){.preview{position:static}}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.tabs{display:inline-flex;background:var(--sheet);border-radius:12px;padding:4px}
+.tabs button{border:none;background:none;border-radius:9px;padding:8px 14px;font-weight:500;font-size:14.5px}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--page);font-weight:600}
+.count{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.coach{background:var(--sheet);border-radius:14px;padding:14px 16px;display:grid;gap:8px}
+.coach h2{font-size:15px;margin:0;font-weight:600}
+.coach ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.coach li{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.4}
+.coach li .dot{flex:none;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;margin-top:1px}
+.coach li.ok .dot{background:var(--ok);color:#fff}
+.coach li.no .dot{border:1.5px solid var(--warn);color:var(--warn)}
+.coach li.ok span:last-child{color:var(--muted)}
+
+/* The story sheet: the signature element */
+.sheet{background:var(--sheet);color:var(--ink);border-radius:4px;box-shadow:0 1px 0 var(--line),0 18px 40px -24px rgba(28,37,65,.45);padding:clamp(22px,4vw,44px);font-family:var(--story)}
+.mast{display:flex;justify-content:space-between;gap:12px;font-family:var(--ui);font-size:13px;color:var(--muted);border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:22px}
+.mast b{color:var(--ink);font-weight:600}
+.sheet h3{font-size:clamp(26px,3.2vw,36px);line-height:1.12;font-weight:700;margin:0 0 14px;letter-spacing:-.01em;text-wrap:balance}
+:root[dir="rtl"] .sheet h3{line-height:1.45;letter-spacing:0}
+.sheet .photo{margin:0 0 18px}
+.sheet .photo img{display:block;width:100%;max-height:340px;object-fit:cover;border-radius:2px}
+.sheet .photo figcaption{font-family:var(--ui);font-size:13px;color:var(--muted);margin-top:6px}
+.body{display:grid;grid-template-columns:minmax(0,1fr) 168px;gap:26px;align-items:start}
+@media (max-width:560px){.body{grid-template-columns:minmax(0,1fr)}}
+.body p{margin:0 0 14px;font-size:17px;line-height:1.68}
+:root[dir="rtl"] .body p{font-size:18px;line-height:1.95}
+mark{background:linear-gradient(transparent 12%,var(--marker) 12%,var(--marker) 88%,transparent 88%);color:var(--marker-ink);padding:0 .12em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.side{display:grid;gap:18px}
+.stat{border-top:2px solid var(--ink);padding-top:10px}
+.stat .big{font-size:44px;line-height:1;font-weight:700;letter-spacing:-.02em;display:block}
+.stat .lbl{font-family:var(--ui);font-size:13.5px;color:var(--muted);display:block;margin-top:6px;line-height:1.35}
+blockquote{margin:30px 0 20px;padding:0;font-size:clamp(22px,2.6vw,27px);line-height:1.32;font-style:italic;position:relative}
+:root[dir="rtl"] blockquote{font-style:normal;line-height:1.7}
+blockquote::before{content:"\201C";position:absolute;inset-inline-start:-.02em;top:-.42em;font-size:3.2em;line-height:1;color:var(--marker);font-style:normal;z-index:0}
+:root[dir="rtl"] blockquote::before{content:"\00AB";top:-.78em;font-size:2.4em}
+blockquote span{position:relative}
+blockquote cite{display:block;font-style:normal;font-family:var(--ui);font-size:14px;color:var(--muted);margin-top:10px}
+.ack{font-family:var(--ui);font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;margin-top:6px}
+.empty{color:var(--muted);font-style:italic}
+
+/* Short post view */
+.post{background:var(--sheet);border-radius:14px;padding:22px;font-size:16px;line-height:1.6;white-space:pre-wrap;word-wrap:break-word}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.actions button{border:1.5px solid var(--ink);background:transparent;border-radius:10px;padding:10px 16px;font-weight:600}
+.actions button.primary{background:var(--ink);color:var(--page)}
+.status{font-size:14px;color:var(--ok);align-self:center}
+footer{margin-top:40px;color:var(--muted);font-size:14px;max-width:80ch}
+footer a{color:var(--ink);font-weight:600}
+
+@media print{
+  body{background:#fff}
+  .top,.form,.bar,.coach,.actions,footer,.example{display:none!important}
+  .grid{display:block}.preview{position:static}
+  .sheet{box-shadow:none;padding:0}
+  .post{display:none!important}
+  #sheetView{display:block!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1 data-t="title"></h1>
+      <p data-t="lede"></p>
+    </div>
+    <button class="lang" id="langBtn" type="button"></button>
+  </header>
+
+  <div class="grid">
+    <form class="form" id="form" autocomplete="off" onsubmit="return false">
+      <div class="example" id="example"><span data-t="sample"></span><button type="button" id="clearBtn" data-t="clear"></button></div>
+
+      <fieldset>
+        <legend><span class="n">1</span><span><span class="lt" data-t="s1"></span><span class="lh" data-t="s1h"></span></span></legend>
+        <div class="row">
+          <label><span data-t="fName"></span><input type="text" name="name"></label>
+          <label><span data-t="fAge"></span><input type="text" name="age" inputmode="numeric"></label>
+        </div>
+        <label><span data-t="fRole"></span><input type="text" name="role"></label>
+        <label><span data-t="fLoc"></span><input type="text" name="loc"></label>
+        <div><div style="font-size:14.5px;font-weight:500;margin-bottom:6px" data-t="fPron"></div><div class="seg" id="pron" role="group"></div></div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="n">2</span><span><span class="lt" data-t="s2"></span><span class="lh" data-t="s2h"></span></span></legend>
+        <label><span data-t="fBefore"></span><textarea name="before" rows="3"></textarea></label>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="n">3</span><span><span class="lt" data-t="s3"></span><span class="lh" data-t="s3h"></span></span></legend>
+        <label><span data-t="fProgram"></span><input type="text" name="program"></label>
+        <label><span data-t="fTurn"></span><textarea name="turn" rows="3"></textarea></label>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="n">4</span><span><span class="lt" data-t="s4"></span><span class="lh" data-t="s4h"></span></span></legend>
+        <label><span data-t="fAfter"></span><textarea name="after" rows="3"></textarea></label>
+        <label><span data-t="fResult"></span><input type="text" name="result"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="n">5</span><span><span class="lt" data-t="s5"></span><span class="lh" data-t="s5h"></span></span></legend>
+        <label><span data-t="fQuote"></span><textarea name="quote" rows="3"></textarea></label>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="n">6</span><span><span class="lt" data-t="s6"></span><span class="lh" data-t="s6h"></span></span></legend>
+        <label><span data-t="fHead"></span><input type="text" name="headline"></label>
+        <div class="chips" id="chips"></div>
+        <div class="file">
+          <label class="btn" for="photo" data-t="fPhoto"></label><input type="file" id="photo" accept="image/*">
+          <button type="button" class="clear" id="photoClear" data-t="fPhotoClear" hidden></button>
+        </div>
+        <label><span data-t="fCaption"></span><input type="text" name="caption"></label>
+        <div class="row">
+          <label><span data-t="fOrg"></span><input type="text" name="org"></label>
+          <label><span data-t="fFunder"></span><input type="text" name="funder"></label>
+        </div>
+        <label class="check"><input type="checkbox" name="consent"><span data-t="fConsent"></span></label>
+      </fieldset>
+    </form>
+
+    <section class="preview" aria-live="polite">
+      <div class="bar">
+        <div class="tabs" role="tablist">
+          <button type="button" role="tab" id="tabSheet" aria-selected="true" data-t="tabFull"></button>
+          <button type="button" role="tab" id="tabPost" aria-selected="false" data-t="tabPost"></button>
+        </div>
+        <span class="count" id="count"></span>
+      </div>
+      <div class="coach"><h2 data-t="coachH"></h2><ul id="coach"></ul></div>
+      <article class="sheet" id="sheetView"></article>
+      <div class="post" id="postView" hidden></div>
+      <div class="actions">
+        <button type="button" class="primary" id="copyBtn" data-t="copy"></button>
+        <button type="button" id="wordBtn" data-t="word"></button>
+        <button type="button" id="printBtn" data-t="print"></button>
+        <span class="status" id="status" role="status"></span>
+      </div>
+    </section>
+  </div>
+
+  <footer><span data-t="footer"></span> <a href="https://tarekhalteh.com" target="_blank" rel="noopener">tarekhalteh.com</a></footer>
+</div>
+
+<script>
+const T={
+ en:{title:"Success Story Builder",lede:"Turn your field notes into a donor-ready success story, plus a short version for social media. Free, in English and Arabic. Nothing you type leaves your browser.",
+  lang:"العربية",sample:"This is an example story so you can see how it works.",clear:"Clear and write mine",
+  s1:"The person",s1h:"Who is this story about?",fName:"Full name",fAge:"Age (optional)",fRole:"Who they are",fLoc:"Where they live or work",fPron:"Refer to them as",
+  pron:["She","He","They"],
+  s2:"Before",s2h:"What was hard? Be specific.",fBefore:"The challenge they faced",
+  s3:"The turning point",s3h:"What did your program do?",fProgram:"Program or project name (optional)",fTurn:"What happened",
+  s4:"After",s4h:"What is different now?",fAfter:"What changed in their life or work",fResult:"The result, with a number",
+  s5:"In their words",s5h:"One real quote, in their own voice.",fQuote:"Quote",
+  s6:"Finishing touches",s6h:"Headline, photo and credits.",fHead:"Headline",fPhoto:"Add a photo",fPhotoClear:"Remove photo",fCaption:"Photo caption",fOrg:"Your organization (optional)",fFunder:"Funded by (optional)",
+  fConsent:"I have this person's informed consent to share their name, photo and story.",
+  ph:{name:"e.g. Rana Haddad",age:"e.g. 34",role:"e.g. a mother of three who runs a catering business from home",loc:"e.g. Irbid, Jordan",before:"e.g. Orders came only from neighbors, and she had no way to reach new customers.",program:"e.g. the Women in Business program",turn:"e.g. She completed a 10-week course on pricing and online marketing, and received a small equipment grant.",after:"e.g. She now takes orders through social media and has hired her first employee.",result:"e.g. a 40% increase in monthly income",quote:"e.g. For the first time, I plan my business a month ahead instead of a day ahead.",headline:"Write your own or pick a suggestion below",caption:"e.g. Rana prepares an order in her kitchen in Irbid.",org:"e.g. Community Development Partners",funder:"e.g. the Example Foundation"},
+  tabFull:"Full story",tabPost:"Social post",words:"words",
+  coachH:"Story check",
+  coach:{name:["Names a real person","Add the person's name. Stories about one person land better than stories about groups."],
+         before:["Shows the before","Describe the challenge in a sentence or two, so readers see what changed."],
+         number:["Has a number in the result","Add a number to the result (%, income, hours, people). Donors look for evidence."],
+         quote:["Includes a direct quote","Add one quote in the person's own words."],
+         consent:["Consent confirmed","Confirm you have the person's informed consent before sharing."],
+         length:["Good length for a one-pager","Aim for 150 to 400 words in the full story."]},
+  masthead:"Success story",
+  copy:"Copy text",copied:"Copied",word:"Download Word file",downloaded:"Downloaded",print:"Print or save as PDF",
+  emptySheet:"Start typing on the left and your story will appear here.",
+  footer:"Built by Tarek Halteh, communications consultant with 14 years in development programs, SaaS and FMCG across MENA."},
+ ar:{title:"أداة بناء قصص النجاح",lede:"حوّل ملاحظاتك الميدانية إلى قصة نجاح جاهزة للجهات المانحة، مع نسخة قصيرة لوسائل التواصل الاجتماعي. مجانية، بالعربية والإنجليزية. لا يغادر ما تكتبه متصفحك.",
+  lang:"English",sample:"هذه قصة توضيحية لترى كيف تعمل الأداة.",clear:"امسح واكتب قصتي",
+  s1:"الشخص",s1h:"عمّن تتحدث هذه القصة؟",fName:"الاسم الكامل",fAge:"العمر (اختياري)",fRole:"من هو أو هي",fLoc:"مكان السكن أو العمل",fPron:"الإشارة إليه بصيغة",
+  pron:["المؤنث","المذكر"],
+  s2:"قبل",s2h:"ما الصعوبة؟ كن محدداً.",fBefore:"التحدي الذي واجهه",
+  s3:"نقطة التحول",s3h:"ماذا قدّم برنامجكم؟",fProgram:"اسم البرنامج أو المشروع (اختياري)",fTurn:"ماذا حدث",
+  s4:"بعد",s4h:"ما الذي تغيّر الآن؟",fAfter:"ما الذي تغيّر في حياته أو عمله",fResult:"النتيجة، مع رقم",
+  s5:"بكلماته",s5h:"اقتباس حقيقي واحد بصوته.",fQuote:"الاقتباس",
+  s6:"اللمسات الأخيرة",s6h:"العنوان والصورة والجهات.",fHead:"العنوان",fPhoto:"أضف صورة",fPhotoClear:"إزالة الصورة",fCaption:"تعليق الصورة",fOrg:"مؤسستك (اختياري)",fFunder:"بتمويل من (اختياري)",
+  fConsent:"لدي موافقة مستنيرة من هذا الشخص على نشر اسمه وصورته وقصته.",
+  ph:{name:"مثال: رنا حداد",age:"مثال: 34",role:"مثال: أم لثلاثة أطفال تدير مشروع طعام من المنزل",loc:"مثال: إربد، الأردن",before:"مثال: كانت الطلبات تأتي من الجيران فقط، ولم تكن لديها وسيلة للوصول إلى زبائن جدد.",program:"مثال: برنامج المرأة في الأعمال",turn:"مثال: أنهت دورة مدتها 10 أسابيع في التسعير والتسويق الإلكتروني، وحصلت على منحة صغيرة لشراء معدات.",after:"مثال: أصبحت تستقبل الطلبات عبر وسائل التواصل الاجتماعي ووظّفت أول موظفة لديها.",result:"مثال: زيادة بنسبة 40% في دخلها الشهري",quote:"مثال: لأول مرة، أخطط لمشروعي قبل شهر بدلاً من يوم واحد.",headline:"اكتب عنوانك أو اختر أحد الاقتراحات أدناه",caption:"مثال: رنا تحضّر طلباً في مطبخها في إربد.",org:"مثال: شركاء التنمية المجتمعية",funder:"مثال: المؤسسة النموذجية"},
+  tabFull:"القصة الكاملة",tabPost:"منشور قصير",words:"كلمة",
+  coachH:"فحص القصة",
+  coach:{name:["تذكر شخصاً حقيقياً","أضف اسم الشخص. القصص عن فرد واحد أكثر تأثيراً من القصص عن مجموعات."],
+         before:["توضح الوضع قبل","صِف التحدي في جملة أو جملتين ليرى القارئ ما الذي تغيّر."],
+         number:["النتيجة تتضمن رقماً","أضف رقماً إلى النتيجة (نسبة، دخل، ساعات، أشخاص). الجهات المانحة تبحث عن الدليل."],
+         quote:["تتضمن اقتباساً مباشراً","أضف اقتباساً واحداً بكلمات الشخص نفسه."],
+         consent:["الموافقة مؤكدة","تأكد من وجود موافقة مستنيرة من الشخص قبل النشر."],
+         length:["طول مناسب لصفحة واحدة","اجعل القصة الكاملة بين 150 و400 كلمة."]},
+  masthead:"قصة نجاح",
+  copy:"نسخ النص",copied:"تم النسخ",word:"تنزيل ملف Word",downloaded:"تم التنزيل",print:"طباعة أو حفظ كملف PDF",
+  emptySheet:"ابدأ الكتابة على اليمين وستظهر قصتك هنا.",
+  footer:"من إعداد طارق الحلتة، مستشار اتصال بخبرة 14 عاماً في برامج التنمية والبرمجيات والسلع الاستهلاكية في المنطقة."}
+};
+
+const SAMPLE={
+ en:{name:"Rana Haddad",age:"34",role:"a mother of three who runs a catering business from home",loc:"Irbid, Jordan",
+  before:"For years, Rana's orders came only from neighbors and relatives. She priced her dishes by guesswork and had no way to reach new customers, so her income rose and fell with the seasons.",
+  program:"the Women in Business program",
+  turn:"Over ten weeks she learned how to cost her recipes, set fair prices and market her food online. She also received a small grant to buy a second oven, which let her take on larger orders.",
+  after:"Rana now takes most of her orders through social media and delivers to offices across the city. Last spring she hired her first employee, a neighbor who had been looking for work.",
+  result:"a 40% increase in monthly income",
+  quote:"For the first time, I plan my business a month ahead instead of a day ahead. My children see me as a businesswoman now.",
+  headline:"",caption:"Rana prepares an order in her kitchen in Irbid.",org:"Community Development Partners",funder:"the Example Foundation",consent:true,pron:0},
+ ar:{name:"رنا حداد",age:"34",role:"أم لثلاثة أطفال تدير مشروع طعام من المنزل",loc:"إربد، الأردن",
+  before:"لسنوات، كانت طلبات رنا تأتي من الجيران والأقارب فقط. كانت تسعّر أطباقها بالتخمين، ولم تكن لديها وسيلة للوصول إلى زبائن جدد، فكان دخلها يرتفع وينخفض مع المواسم.",
+  program:"برنامج المرأة في الأعمال",
+  turn:"على مدى عشرة أسابيع، تعلّمت كيف تحسب كلفة وصفاتها وتحدد أسعاراً عادلة وتسوّق طعامها عبر الإنترنت. كما حصلت على منحة صغيرة لشراء فرن ثانٍ مكّنها من استقبال طلبات أكبر.",
+  after:"تستقبل رنا اليوم معظم طلباتها عبر وسائل التواصل الاجتماعي، وتوصلها إلى مكاتب في أنحاء المدينة. وفي الربيع الماضي، وظّفت أول موظفة لديها، وهي جارة كانت تبحث عن عمل.",
+  result:"زيادة بنسبة 40% في دخلها الشهري",
+  quote:"لأول مرة، أخطط لمشروعي قبل شهر بدلاً من يوم واحد. أطفالي يرونني الآن سيدة أعمال.",
+  headline:"",caption:"رنا تحضّر طلباً في مطبخها في إربد.",org:"شركاء التنمية المجتمعية",funder:"المؤسسة النموذجية",consent:true,pron:0}
+};
+const FIELDS=["name","age","role","loc","before","program","turn","after","result","quote","headline","caption","org","funder"];
+
+let lang="en", pron=0, isSample=true, photo=null, view="sheet";
+try{const l=localStorage.getItem("ssb-lang"); if(l==="ar"||l==="en") lang=l;}catch(e){}
+const qpl=new URLSearchParams(location.search).get("lang"); if(qpl==="ar"||qpl==="en") lang=qpl;
+
+const $=s=>document.querySelector(s);
+const form=$("#form");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const v=k=>(form.elements[k].value||"").trim();
+const first=n=>n.split(/\s+/)[0]||"";
+const endP=s=>!s?"":(/[.!?؟…"”»]$/.test(s)?s:s+".");
+const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
+const firstSentence=s=>{const m=s.match(/^.*?[.!?؟](\s|$)/);return (m?m[0]:s).trim()};
+const hasNum=s=>/[0-9٠-٩]/.test(s);
+const words=s=>(s.trim().match(/\S+/g)||[]).length;
+
+function fill(data){
+  FIELDS.forEach(k=>form.elements[k].value=data[k]||"");
+  form.elements.consent.checked=!!data.consent; pron=data.pron||0;
+}
+function loadSample(){fill(SAMPLE[lang])}
+
+/* Story assembly: one function per language, using pronoun-aware connectors */
+function compose(){
+  const d={}; FIELDS.forEach(k=>d[k]=v(k)); d.consent=form.elements.consent.checked;
+  const f=first(d.name)||(lang==="en"?"They":"");
+  const P=[];
+  if(lang==="en"){
+    const subj=["she","he","they"][pron], verb=pron===2?"report":"reports", says=pron===2?"say":"says";
+    let lede="";
+    if(d.name){lede=d.name+(d.age?`, ${d.age},`:"")+(d.role?` is ${d.role}`:(d.loc?" lives":""))+(d.loc?` in ${d.loc}`:"")+"."; if(!d.role&&!d.loc) lede=d.name+(d.age?`, ${d.age}`:"")+".";}
+    P.push([lede,endP(d.before)].filter(Boolean).join(" "));
+    P.push([d.program?`That began to change when ${subj} joined ${d.program}.`:"",endP(d.turn)].filter(Boolean).join(" "));
+    d.resultSentence=d.result?`Today, ${subj} ${verb} ${d.result.replace(/\.$/,"")}.`:"";
+    P.push([endP(d.after),d.resultSentence?"{{R}}":""].filter(Boolean).join(" "));
+    d.attrib=d.name?`${f} ${says}.`:"";
+    d.ack=[d.funder?`This story was made possible with support from ${d.funder}.`:"",d.org?`Produced by ${d.org}.`:""].filter(Boolean).join(" ");
+  }else{
+    const she=pron!==1;
+    let lede="";
+    if(d.name){lede=d.name+(d.age?`، ${d.age} عاماً،`:"")+(d.role?` ${d.role}`:"")+(d.loc?` في ${d.loc}`:"")+".";}
+    P.push([lede,endP(d.before)].filter(Boolean).join(" "));
+    P.push([d.program?`بدأ ذلك يتغيّر عندما ${she?"انضمت":"انضم"} إلى ${d.program}.`:"",endP(d.turn)].filter(Boolean).join(" "));
+    d.resultSentence=d.result?`واليوم، ${she?"تشير":"يشير"} ${f} إلى ${d.result.replace(/\.$/,"")}.`:"";
+    P.push([endP(d.after),d.resultSentence?"{{R}}":""].filter(Boolean).join(" "));
+    d.attrib=d.name?`${she?"تقول":"يقول"} ${f}.`:"";
+    d.ack=[d.funder?`أُنجزت هذه القصة بدعم من ${d.funder}.`:"",d.org?`من إعداد ${d.org}.`:""].filter(Boolean).join(" ");
+  }
+  d.paras=P.filter(p=>p.trim());
+  d.headlineFinal=d.headline||suggestions(d)[0]||"";
+  return d;
+}
+
+function suggestions(d){
+  const f=first(d.name), out=[];
+  const qShort=d.quote?d.quote.split(/\s+/).slice(0,9).join(" ").replace(/[.,،;:]+$/,"")+(d.quote.split(/\s+/).length>9?"…":""):"";
+  if(lang==="en"){
+    if(d.result&&f) out.push(cap(d.result.replace(/\.$/,""))+` for ${f}`+(d.loc?` in ${d.loc.split(",")[0]}`:""));
+    if(qShort) out.push(`“${qShort}”`);
+    if(f&&d.loc) out.push(`In ${d.loc.split(",")[0]}, ${f} writes a new chapter`);
+  }else{
+    const she=pron!==1;
+    if(d.result&&f) out.push(d.result.replace(/\.$/,"")+` لـ${f}`+(d.loc?` في ${d.loc.split("،")[0].split(",")[0]}`:""));
+    if(qShort) out.push(`«${qShort}»`);
+    if(f&&d.loc) out.push(`في ${d.loc.split("،")[0].split(",")[0]}، ${f} ${she?"تبدأ":"يبدأ"} فصلاً جديداً`);
+  }
+  return out;
+}
+
+/* Pull the headline figure out of the result line for the side stat */
+function statParts(result){
+  const m=result.match(/([$€£]?\s?[0-9٠-٩][0-9٠-٩.,]*\s?(%|٪|x|×)?)/);
+  if(!m) return null;
+  const big=m[1].trim(); let lbl=result.replace(m[1],"").replace(/\s{2,}/g," ").trim();
+  lbl=lbl.replace(/^(a|an)\s+/i,"").replace(/^(بنسبة|نسبة)\s*/,"");
+  return {big,lbl};
+}
+
+function sheetHTML(d,forWord){
+  const t=T[lang];
+  if(!d.paras.length&&!d.quote&&!d.headlineFinal) return `<p class="empty">${t.emptySheet}</p>`;
+  const st=d.result?statParts(d.result):null;
+  const paras=d.paras.map(p=>`<p>${esc(p).replace("{{R}}",`<mark>${esc(d.resultSentence)}</mark>`)}</p>`);
+  const quote=d.quote?`<blockquote><span>${esc(d.quote.replace(/^["“«]|["”»]$/g,""))}</span>${d.name?`<cite>${esc(d.name)}${d.loc?(lang==="ar"?"، ":", ")+esc(d.loc):""}</cite>`:""}</blockquote>`:"";
+  // Quote sits after the second paragraph, where the story turns
+  const bodyParts=[...paras]; bodyParts.splice(Math.min(2,bodyParts.length),0,quote);
+  const side=st?`<div class="stat"><span class="big">${esc(st.big)}</span><span class="lbl">${esc(st.lbl)}</span></div>`:"";
+  return `<div class="mast"><span><b>${t.masthead}</b></span><span>${esc((d.program||d.org||"").replace(/^the\s+/i,""))}</span></div>
+  <h3>${esc(d.headlineFinal)}</h3>
+  ${photo?`<figure class="photo"><img src="${photo}" alt="${esc(d.caption||d.name)}">${d.caption?`<figcaption>${esc(d.caption)}</figcaption>`:""}</figure>`:""}
+  <div class="body"><div>${bodyParts.join("")}</div>${side?`<aside class="side">${side}</aside>`:""}</div>
+  ${d.ack?`<p class="ack">${esc(d.ack)}</p>`:""}`;
+}
+
+function plainStory(d){
+  const parts=[d.headlineFinal,""];
+  d.paras.forEach((p,i)=>{parts.push(p.replace("{{R}}",d.resultSentence),""); if(i===1&&d.quote) parts.push(`“${d.quote.replace(/^["“«]|["”»]$/g,"")}” ${d.attrib}`.trim(),"");});
+  if(d.paras.length<2&&d.quote) parts.push(`“${d.quote}” ${d.attrib}`,"");
+  if(d.caption&&photo) parts.push(`[${d.caption}]`,"");
+  if(d.ack) parts.push(d.ack);
+  return parts.join("\n").replace(/\n{3,}/g,"\n\n").trim();
+}
+
+function postText(d){
+  const lines=[];
+  if(d.headlineFinal) lines.push(d.headlineFinal,"");
+  const b=d.before?firstSentence(d.before):"";
+  const mid=[b,d.resultSentence].filter(Boolean).join(" ");
+  if(mid) lines.push(mid,"");
+  if(d.quote){const q=d.quote.replace(/^["“«]|["”»]$/g,""); lines.push(lang==="en"?`“${q}”`:`«${q}»`,"");}
+  const tags=lang==="en"?"#Impact #SuccessStory #Development":"#قصص_نجاح #تنمية #أثر";
+  if(d.funder) lines.push(lang==="en"?`With thanks to ${d.funder}.`:`شكراً لـ${d.funder}.`);
+  lines.push(tags);
+  return lines.join("\n").trim();
+}
+
+function coach(d){
+  const c=T[lang].coach, wc=words(plainStory(d));
+  const checks=[["name",!!d.name],["before",d.before.length>=40],["number",hasNum(d.result)],["quote",d.quote.length>=12],["consent",d.consent],["length",wc>=150&&wc<=400]];
+  $("#coach").innerHTML=checks.map(([k,ok])=>`<li class="${ok?"ok":"no"}"><span class="dot" aria-hidden="true">${ok?"✓":"!"}</span><span>${ok?c[k][0]:c[k][1]}</span></li>`).join("");
+}
+
+function update(){
+  const d=compose(), t=T[lang];
+  $("#sheetView").innerHTML=sheetHTML(d);
+  $("#postView").textContent=postText(d);
+  const wc=view==="sheet"?words(plainStory(d)):words(postText(d));
+  $("#count").textContent=`${wc} ${t.words}`;
+  coach(d);
+  const sugg=suggestions(d);
+  $("#chips").innerHTML=sugg.map(s=>`<button type="button" class="chip" data-h="${esc(s)}">${esc(s)}</button>`).join("");
+}
+
+function render(){
+  const t=T[lang];
+  document.documentElement.lang=lang; document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+  document.querySelectorAll("[data-t]").forEach(el=>el.textContent=t[el.dataset.t]);
+  $("#langBtn").textContent=t.lang;
+  Object.entries(t.ph).forEach(([k,p])=>form.elements[k].placeholder=p);
+  if(lang==="ar"&&pron===2) pron=0;
+  $("#pron").innerHTML=t.pron.map((p,i)=>`<button type="button" data-p="${i}" aria-pressed="${i===pron}">${p}</button>`).join("");
+  $("#example").hidden=!isSample;
+  $("#photoClear").hidden=!photo;
+  update();
+}
+
+form.addEventListener("input",()=>{if(isSample){isSample=false;$("#example").hidden=true;} update();});
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  if(b.dataset.p!=null){pron=+b.dataset.p;document.querySelectorAll("#pron button").forEach(x=>x.setAttribute("aria-pressed",x===b));update();}
+  if(b.dataset.h!=null){form.elements.headline.value=b.dataset.h;update();}
+});
+$("#clearBtn").addEventListener("click",()=>{isSample=false;fill({});photo=null;$("#photo").value="";render();form.elements.name.focus();});
+$("#langBtn").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";try{localStorage.setItem("ssb-lang",lang)}catch(e){} if(isSample) loadSample(); render();});
+$("#tabSheet").addEventListener("click",()=>setView("sheet"));
+$("#tabPost").addEventListener("click",()=>setView("post"));
+function setView(x){view=x;$("#tabSheet").setAttribute("aria-selected",x==="sheet");$("#tabPost").setAttribute("aria-selected",x==="post");$("#sheetView").hidden=x!=="sheet";$("#postView").hidden=x!=="post";update();}
+
+$("#photo").addEventListener("change",e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const r=new FileReader(); r.onload=()=>{photo=r.result;$("#photoClear").hidden=false;update();}; r.readAsDataURL(file);
+});
+$("#photoClear").addEventListener("click",()=>{photo=null;$("#photo").value="";$("#photoClear").hidden=true;update();});
+
+function flash(msg){const s=$("#status");s.textContent=msg;setTimeout(()=>{if(s.textContent===msg)s.textContent=""},1800);}
+$("#copyBtn").addEventListener("click",()=>{
+  const d=compose(), txt=view==="sheet"?plainStory(d):postText(d);
+  navigator.clipboard.writeText(txt).then(()=>flash(T[lang].copied)).catch(()=>{
+    const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");flash(T[lang].copied)}catch(e){};ta.remove();});
+});
+$("#wordBtn").addEventListener("click",()=>{
+  const d=compose(), rtl=lang==="ar";
+  const font=rtl?"'Noto Naskh Arabic','Times New Roman'":"'Source Serif 4',Georgia,'Times New Roman'";
+  const html=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>${esc(d.headlineFinal||T[lang].masthead)}</title>
+  <style>body{font-family:${font};font-size:12pt;line-height:1.5;direction:${rtl?"rtl":"ltr"}}h1{font-size:22pt;margin:0 0 10pt}p{margin:0 0 9pt}.m{font-size:9pt;color:#5A6478;border-bottom:1.5pt solid #1C2541;padding-bottom:4pt;margin-bottom:12pt}blockquote{font-size:15pt;font-style:${rtl?"normal":"italic"};margin:10pt 0 12pt;border-${rtl?"right":"left"}:3pt solid #FFE066;padding-${rtl?"right":"left"}:10pt}.c{font-size:10pt;color:#5A6478;font-style:normal}.r{background:#FFE066}.a{font-size:9pt;color:#5A6478;border-top:.75pt solid #CDD4DE;padding-top:6pt}</style></head><body dir="${rtl?"rtl":"ltr"}">
+  <p class="m">${T[lang].masthead}${d.program?" | "+esc(d.program):""}</p><h1>${esc(d.headlineFinal)}</h1>
+  ${photo?`<p><img src="${photo}" width="560"></p>${d.caption?`<p class="c">${esc(d.caption)}</p>`:""}`:""}
+  ${d.paras.map((p,i)=>`<p>${esc(p).replace("{{R}}",`<span class="r">${esc(d.resultSentence)}</span>`)}</p>`+(i===1&&d.quote?`<blockquote>“${esc(d.quote.replace(/^["“«]|["”»]$/g,""))}”<br><span class="c">${esc(d.name)}${d.loc?(rtl?"، ":", ")+esc(d.loc):""}</span></blockquote>`:"")).join("")}
+  ${d.ack?`<p class="a">${esc(d.ack)}</p>`:""}</body></html>`;
+  const blob=new Blob(["﻿",html],{type:"application/msword"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download=(first(d.name)||"success")+"-story.doc"; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000); flash(T[lang].downloaded);
+});
+$("#printBtn").addEventListener("click",()=>{if(view!=="sheet")setView("sheet");window.print();});
+
+loadSample(); render();
+</script>
+</body>
+</html>
