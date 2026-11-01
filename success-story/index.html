@@ -44,6 +44,8 @@ button{cursor:pointer}
 /* Form */
 .example{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--marker);color:var(--marker-ink);border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:15px}
 .example button{border:none;background:var(--marker-ink);color:#fff;border-radius:8px;padding:8px 14px;font-weight:600}
+.example.quiet{background:transparent;color:var(--muted);border:1.5px dashed var(--line)}
+.example.quiet button{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
 fieldset{border:none;margin:0 0 14px;padding:20px 20px 16px;background:var(--sheet);border-radius:16px;display:grid;gap:14px}
 legend{float:inline-start;width:100%;padding:0;display:flex;gap:12px;align-items:baseline}
 legend .n{font-family:var(--story);font-size:30px;line-height:1;font-weight:700;color:var(--muted);min-width:22px}
@@ -146,7 +148,8 @@ footer a{color:var(--ink);font-weight:600}
 
   <div class="grid">
     <form class="form" id="form" autocomplete="off" onsubmit="return false">
-      <div class="example" id="example"><span data-t="sample"></span><button type="button" id="clearBtn" data-t="clear"></button></div>
+      <div class="example" id="example" hidden><span data-t="sample"></span><button type="button" id="clearBtn" data-t="clear"></button></div>
+      <div class="example quiet" id="exampleOffer"><span data-t="offer"></span><button type="button" id="showExample" data-t="showEx"></button></div>
 
       <fieldset>
         <legend><span class="n">1</span><span><span class="lt" data-t="s1"></span><span class="lh" data-t="s1h"></span></span></legend>
@@ -224,7 +227,7 @@ footer a{color:var(--ink);font-weight:600}
 <script>
 const T={
  en:{title:"Success Story Builder",lede:"Turn your field notes into a donor-ready success story, plus a short version for social media. Free, in English and Arabic. Nothing you type leaves your browser.",
-  lang:"العربية",sample:"This is an example story so you can see how it works.",clear:"Clear and write mine",
+  lang:"العربية",sample:"This is an example story so you can see how it works.",clear:"Clear and write mine",offer:"Not sure what to write? See a filled-in example first.",showEx:"Show example",
   s1:"The person",s1h:"Who is this story about?",fName:"Full name",fAge:"Age (optional)",fRole:"Who they are",fLoc:"Where they live or work",fPron:"Refer to them as",
   pron:["She","He","They"],
   s2:"Before",s2h:"What was hard? Be specific.",fBefore:"The challenge they faced",
@@ -247,7 +250,7 @@ const T={
   emptySheet:"Start typing on the left and your story will appear here.",
   footer:"Built by Tarek Halteh, communications consultant with 14 years in development programs, SaaS and FMCG across MENA."},
  ar:{title:"أداة بناء قصص النجاح",lede:"حوّل ملاحظاتك الميدانية إلى قصة نجاح جاهزة للجهات المانحة، مع نسخة قصيرة لوسائل التواصل الاجتماعي. مجانية، بالعربية والإنجليزية. لا يغادر ما تكتبه متصفحك.",
-  lang:"English",sample:"هذه قصة توضيحية لترى كيف تعمل الأداة.",clear:"امسح واكتب قصتي",
+  lang:"English",sample:"هذه قصة توضيحية لترى كيف تعمل الأداة.",clear:"امسح واكتب قصتي",offer:"لست متأكداً مما تكتبه؟ اطّلع على مثال مكتمل أولاً.",showEx:"عرض مثال",
   s1:"الشخص",s1h:"عمّن تتحدث هذه القصة؟",fName:"الاسم الكامل",fAge:"العمر (اختياري)",fRole:"من هو أو هي",fLoc:"مكان السكن أو العمل",fPron:"الإشارة إليه بصيغة",
   pron:["المؤنث","المذكر"],
   s2:"قبل",s2h:"ما الصعوبة؟ كن محدداً.",fBefore:"التحدي الذي واجهه",
@@ -291,7 +294,7 @@ const SAMPLE={
 };
 const FIELDS=["name","age","role","loc","before","program","turn","after","result","quote","headline","caption","org","funder"];
 
-let lang="en", pron=0, isSample=true, photo=null, view="sheet";
+let lang="en", pron=0, isSample=false, photo=null, view="sheet";
 try{const l=localStorage.getItem("ssb-lang"); if(l==="ar"||l==="en") lang=l;}catch(e){}
 const qpl=new URLSearchParams(location.search).get("lang"); if(qpl==="ar"||qpl==="en") lang=qpl;
 
@@ -419,6 +422,7 @@ function update(){
   const wc=view==="sheet"?words(plainStory(d)):words(postText(d));
   $("#count").textContent=`${wc} ${t.words}`;
   coach(d);
+  $("#exampleOffer").hidden=isSample||FIELDS.some(k=>v(k));
   const sugg=suggestions(d);
   $("#chips").innerHTML=sugg.map(s=>`<button type="button" class="chip" data-h="${esc(s)}">${esc(s)}</button>`).join("");
 }
@@ -442,6 +446,7 @@ document.addEventListener("click",e=>{
   if(b.dataset.p!=null){pron=+b.dataset.p;document.querySelectorAll("#pron button").forEach(x=>x.setAttribute("aria-pressed",x===b));update();}
   if(b.dataset.h!=null){form.elements.headline.value=b.dataset.h;update();}
 });
+$("#showExample").addEventListener("click",()=>{isSample=true;loadSample();render();});
 $("#clearBtn").addEventListener("click",()=>{isSample=false;fill({});photo=null;$("#photo").value="";render();form.elements.name.focus();});
 $("#langBtn").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";try{localStorage.setItem("ssb-lang",lang)}catch(e){} if(isSample) loadSample(); render();});
 $("#tabSheet").addEventListener("click",()=>setView("sheet"));
@@ -476,7 +481,7 @@ $("#wordBtn").addEventListener("click",()=>{
 });
 $("#printBtn").addEventListener("click",()=>{if(view!=="sheet")setView("sheet");window.print();});
 
-loadSample(); render();
+render();
 </script>
 </body>
 </html>
