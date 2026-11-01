@@ -71,6 +71,22 @@ input:focus,textarea:focus,select:focus{border-color:var(--ink);outline:none;box
 .file input{position:absolute;width:1px;height:1px;opacity:0}
 .file .clear{border:none;background:none;color:var(--muted);text-decoration:underline;padding:0}
 
+/* Step-by-step flow */
+.stepper{display:flex;gap:6px;margin-bottom:14px}
+.stepper button{flex:1 1 0;min-width:0;border:none;background:none;padding:4px 0;display:grid;gap:6px;text-align:start;font-size:12.5px;color:var(--muted)}
+.stepper .sb{height:6px;border-radius:3px;background:var(--line)}
+.stepper button.done .sb{background:var(--ink)}
+.stepper button.current .sb{background:var(--marker);box-shadow:inset 0 0 0 1px var(--ink)}
+.stepper button.current{color:var(--ink);font-weight:600}
+.stepper .sl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:600px){.stepper .sl{display:none}}
+fieldset.step{display:none}
+fieldset.step.active{display:grid}
+.stepcount{font-size:13.5px;color:var(--muted);margin:0 0 -4px}
+.nav{display:flex;align-items:center;gap:10px;margin-top:2px}
+.nav button{border:1.5px solid var(--ink);background:transparent;border-radius:10px;padding:11px 20px;font-weight:600}
+.nav .next{background:var(--ink);color:var(--page);margin-inline-start:auto}
+
 /* Preview column */
 .preview{position:sticky;top:16px;display:grid;gap:14px}
 @media (max-width:980px){.preview{position:static}}
@@ -80,14 +96,21 @@ input:focus,textarea:focus,select:focus{border-color:var(--ink);outline:none;box
 .tabs button[aria-selected="true"]{background:var(--ink);color:var(--page);font-weight:600}
 .count{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
 
-.coach{background:var(--sheet);border-radius:14px;padding:14px 16px;display:grid;gap:8px}
-.coach h2{font-size:15px;margin:0;font-weight:600}
+.coach{background:var(--sheet);border-radius:14px;padding:12px 16px}
+.coach summary{cursor:pointer;font-size:15px;font-weight:600;display:flex;justify-content:space-between;gap:12px;list-style:none}
+.coach summary::-webkit-details-marker{display:none}
+.coach summary span:first-child{flex:1}
+.coach summary .sc{font-weight:500;color:var(--muted);font-size:14px}
+.coach summary::after{content:"+";color:var(--muted);font-weight:500}
+.coach[open] summary::after{content:"−"}
+.coach ul{margin:10px 0 2px}
 .coach ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
 .coach li{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.4}
 .coach li .dot{flex:none;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;margin-top:1px}
 .coach li.ok .dot{background:var(--ok);color:#fff}
 .coach li.no .dot{border:1.5px solid var(--warn);color:var(--warn)}
-.coach li.ok span:last-child{color:var(--muted)}
+.coach li.ok span:last-child,.coach li.wait span:last-child{color:var(--muted)}
+.coach li.wait .dot{border:1.5px solid var(--line)}
 
 /* The story sheet: the signature element */
 .sheet{background:var(--sheet);color:var(--ink);border-radius:4px;box-shadow:0 1px 0 var(--line),0 18px 40px -24px rgba(28,37,65,.45);padding:clamp(22px,4vw,44px);font-family:var(--story)}
@@ -150,8 +173,9 @@ footer a{color:var(--ink);font-weight:600}
     <form class="form" id="form" autocomplete="off" onsubmit="return false">
       <div class="example" id="example" hidden><span data-t="sample"></span><button type="button" id="clearBtn" data-t="clear"></button></div>
       <div class="example quiet" id="exampleOffer"><span data-t="offer"></span><button type="button" id="showExample" data-t="showEx"></button></div>
+      <div class="stepper" id="stepper"></div>
 
-      <fieldset>
+      <fieldset class="step" data-step="0">
         <legend><span class="n">1</span><span><span class="lt" data-t="s1"></span><span class="lh" data-t="s1h"></span></span></legend>
         <div class="row">
           <label><span data-t="fName"></span><input type="text" name="name"></label>
@@ -162,29 +186,29 @@ footer a{color:var(--ink);font-weight:600}
         <div><div style="font-size:14.5px;font-weight:500;margin-bottom:6px" data-t="fPron"></div><div class="seg" id="pron" role="group"></div></div>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="step" data-step="1">
         <legend><span class="n">2</span><span><span class="lt" data-t="s2"></span><span class="lh" data-t="s2h"></span></span></legend>
         <label><span data-t="fBefore"></span><textarea name="before" rows="3"></textarea></label>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="step" data-step="2">
         <legend><span class="n">3</span><span><span class="lt" data-t="s3"></span><span class="lh" data-t="s3h"></span></span></legend>
         <label><span data-t="fProgram"></span><input type="text" name="program"></label>
         <label><span data-t="fTurn"></span><textarea name="turn" rows="3"></textarea></label>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="step" data-step="3">
         <legend><span class="n">4</span><span><span class="lt" data-t="s4"></span><span class="lh" data-t="s4h"></span></span></legend>
         <label><span data-t="fAfter"></span><textarea name="after" rows="3"></textarea></label>
         <label><span data-t="fResult"></span><input type="text" name="result"></label>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="step" data-step="4">
         <legend><span class="n">5</span><span><span class="lt" data-t="s5"></span><span class="lh" data-t="s5h"></span></span></legend>
         <label><span data-t="fQuote"></span><textarea name="quote" rows="3"></textarea></label>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="step" data-step="5">
         <legend><span class="n">6</span><span><span class="lt" data-t="s6"></span><span class="lh" data-t="s6h"></span></span></legend>
         <label><span data-t="fHead"></span><input type="text" name="headline"></label>
         <div class="chips" id="chips"></div>
@@ -199,6 +223,7 @@ footer a{color:var(--ink);font-weight:600}
         </div>
         <label class="check"><input type="checkbox" name="consent"><span data-t="fConsent"></span></label>
       </fieldset>
+      <div class="nav"><button type="button" id="backBtn" data-t="back"></button><button type="button" class="next" id="nextBtn"></button></div>
     </form>
 
     <section class="preview" aria-live="polite">
@@ -209,7 +234,7 @@ footer a{color:var(--ink);font-weight:600}
         </div>
         <span class="count" id="count"></span>
       </div>
-      <div class="coach"><h2 data-t="coachH"></h2><ul id="coach"></ul></div>
+      <details class="coach" id="coachBox" open><summary><span data-t="coachH"></span><span class="sc" id="coachScore"></span></summary><ul id="coach"></ul></details>
       <article class="sheet" id="sheetView"></article>
       <div class="post" id="postView" hidden></div>
       <div class="actions">
@@ -227,7 +252,7 @@ footer a{color:var(--ink);font-weight:600}
 <script>
 const T={
  en:{title:"Success Story Builder",lede:"Turn your field notes into a donor-ready success story, plus a short version for social media. Free, in English and Arabic. Nothing you type leaves your browser.",
-  lang:"العربية",sample:"This is an example story so you can see how it works.",clear:"Clear and write mine",offer:"Not sure what to write? See a filled-in example first.",showEx:"Show example",
+  lang:"العربية",sample:"This is an example story so you can see how it works.",clear:"Clear and write mine",offer:"Not sure what to write? See a filled-in example first.",showEx:"Show example",back:"Back",next:"Next",finish:"See my story",stepOf:"Step {n} of 6",ready:"{n} of 6 ready",
   s1:"The person",s1h:"Who is this story about?",fName:"Full name",fAge:"Age (optional)",fRole:"Who they are",fLoc:"Where they live or work",fPron:"Refer to them as",
   pron:["She","He","They"],
   s2:"Before",s2h:"What was hard? Be specific.",fBefore:"The challenge they faced",
@@ -247,10 +272,10 @@ const T={
          length:["Good length for a one-pager","Aim for 150 to 400 words in the full story."]},
   masthead:"Success story",
   copy:"Copy text",copied:"Copied",word:"Download Word file",downloaded:"Downloaded",print:"Print or save as PDF",
-  emptySheet:"Start typing on the left and your story will appear here.",
+  emptySheet:"Fill in the steps and your story will appear here as you type.",
   footer:"Built by Tarek Halteh, communications consultant with 14 years in development programs, SaaS and FMCG across MENA."},
  ar:{title:"أداة بناء قصص النجاح",lede:"حوّل ملاحظاتك الميدانية إلى قصة نجاح جاهزة للجهات المانحة، مع نسخة قصيرة لوسائل التواصل الاجتماعي. مجانية، بالعربية والإنجليزية. لا يغادر ما تكتبه متصفحك.",
-  lang:"English",sample:"هذه قصة توضيحية لترى كيف تعمل الأداة.",clear:"امسح واكتب قصتي",offer:"لست متأكداً مما تكتبه؟ اطّلع على مثال مكتمل أولاً.",showEx:"عرض مثال",
+  lang:"English",sample:"هذه قصة توضيحية لترى كيف تعمل الأداة.",clear:"امسح واكتب قصتي",offer:"لست متأكداً مما تكتبه؟ اطّلع على مثال مكتمل أولاً.",showEx:"عرض مثال",back:"رجوع",next:"التالي",finish:"اعرض قصتي",stepOf:"الخطوة {n} من 6",ready:"{n} من 6 جاهزة",
   s1:"الشخص",s1h:"عمّن تتحدث هذه القصة؟",fName:"الاسم الكامل",fAge:"العمر (اختياري)",fRole:"من هو أو هي",fLoc:"مكان السكن أو العمل",fPron:"الإشارة إليه بصيغة",
   pron:["المؤنث","المذكر"],
   s2:"قبل",s2h:"ما الصعوبة؟ كن محدداً.",fBefore:"التحدي الذي واجهه",
@@ -270,7 +295,7 @@ const T={
          length:["طول مناسب لصفحة واحدة","اجعل القصة الكاملة بين 150 و400 كلمة."]},
   masthead:"قصة نجاح",
   copy:"نسخ النص",copied:"تم النسخ",word:"تنزيل ملف Word",downloaded:"تم التنزيل",print:"طباعة أو حفظ كملف PDF",
-  emptySheet:"ابدأ الكتابة على اليمين وستظهر قصتك هنا.",
+  emptySheet:"املأ الخطوات وستظهر قصتك هنا أثناء الكتابة.",
   footer:"من إعداد طارق الحلتة، مستشار اتصال بخبرة 14 عاماً في برامج التنمية والبرمجيات والسلع الاستهلاكية في المنطقة."}
 };
 
@@ -294,6 +319,7 @@ const SAMPLE={
 };
 const FIELDS=["name","age","role","loc","before","program","turn","after","result","quote","headline","caption","org","funder"];
 
+let step=0, maxStep=0;
 let lang="en", pron=0, isSample=false, photo=null, view="sheet";
 try{const l=localStorage.getItem("ssb-lang"); if(l==="ar"||l==="en") lang=l;}catch(e){}
 const qpl=new URLSearchParams(location.search).get("lang"); if(qpl==="ar"||qpl==="en") lang=qpl;
@@ -411,8 +437,23 @@ function postText(d){
 
 function coach(d){
   const c=T[lang].coach, wc=words(plainStory(d));
-  const checks=[["name",!!d.name],["before",d.before.length>=40],["number",hasNum(d.result)],["quote",d.quote.length>=12],["consent",d.consent],["length",wc>=150&&wc<=400]];
-  $("#coach").innerHTML=checks.map(([k,ok])=>`<li class="${ok?"ok":"no"}"><span class="dot" aria-hidden="true">${ok?"✓":"!"}</span><span>${ok?c[k][0]:c[k][1]}</span></li>`).join("");
+  // each check belongs to the step where it is answered; unreached steps stay neutral
+  const checks=[["name",!!d.name,0],["before",d.before.length>=40,1],["number",hasNum(d.result),3],["quote",d.quote.length>=12,4],["length",wc>=150&&wc<=400,4],["consent",d.consent,5]];
+  const okN=checks.filter(x=>x[1]).length;
+  $("#coachScore").textContent=T[lang].ready.replace("{n}",okN);
+  $("#coach").innerHTML=checks.map(([k,ok,st])=>{const cls=ok?"ok":(maxStep>st||isSample?"no":"wait");
+    return `<li class="${cls}"><span class="dot" aria-hidden="true">${ok?"✓":cls==="no"?"!":""}</span><span>${cls==="no"?c[k][1]:c[k][0]}</span></li>`}).join("");
+}
+
+function goStep(i,focus){
+  step=Math.max(0,Math.min(5,i)); maxStep=Math.max(maxStep,step);
+  document.querySelectorAll("fieldset.step").forEach(f=>f.classList.toggle("active",+f.dataset.step===step));
+  document.querySelectorAll("#stepper button").forEach((b,j)=>{b.classList.toggle("current",j===step);b.classList.toggle("done",j<step||(j<=maxStep&&j!==step));b.setAttribute("aria-current",j===step?"step":"false")});
+  $("#backBtn").hidden=step===0;
+  $("#nextBtn").textContent=step===5?T[lang].finish:T[lang].next;
+  if(focus){const el=document.querySelector(`fieldset[data-step="${step}"] input[type=text],fieldset[data-step="${step}"] textarea`); if(el) el.focus({preventScroll:true});
+    const top=$("#stepper").getBoundingClientRect().top; if(top<0||top>window.innerHeight*.6) $("#stepper").scrollIntoView({behavior:"smooth",block:"start"});}
+  update();
 }
 
 function update(){
@@ -437,7 +478,8 @@ function render(){
   $("#pron").innerHTML=t.pron.map((p,i)=>`<button type="button" data-p="${i}" aria-pressed="${i===pron}">${p}</button>`).join("");
   $("#example").hidden=!isSample;
   $("#photoClear").hidden=!photo;
-  update();
+  $("#stepper").innerHTML=[1,2,3,4,5,6].map((n,j)=>`<button type="button" data-go="${j}" aria-label="${t.stepOf.replace("{n}",n)}: ${t["s"+n]}"><span class="sb"></span><span class="sl">${t["s"+n]}</span></button>`).join("");
+  goStep(step);
 }
 
 form.addEventListener("input",()=>{if(isSample){isSample=false;$("#example").hidden=true;} update();});
@@ -445,9 +487,14 @@ document.addEventListener("click",e=>{
   const b=e.target.closest("button"); if(!b) return;
   if(b.dataset.p!=null){pron=+b.dataset.p;document.querySelectorAll("#pron button").forEach(x=>x.setAttribute("aria-pressed",x===b));update();}
   if(b.dataset.h!=null){form.elements.headline.value=b.dataset.h;update();}
+  if(b.dataset.go!=null){goStep(+b.dataset.go,true);}
 });
-$("#showExample").addEventListener("click",()=>{isSample=true;loadSample();render();});
-$("#clearBtn").addEventListener("click",()=>{isSample=false;fill({});photo=null;$("#photo").value="";render();form.elements.name.focus();});
+$("#showExample").addEventListener("click",()=>{isSample=true;loadSample();maxStep=5;render();});
+$("#backBtn").addEventListener("click",()=>goStep(step-1,true));
+$("#nextBtn").addEventListener("click",()=>{ if(step<5){goStep(step+1,true);return}
+  maxStep=5; update(); $(".preview").scrollIntoView({behavior:"smooth",block:"start"}); });
+form.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.matches("input[type=text]")){e.preventDefault();$("#nextBtn").click();}});
+$("#clearBtn").addEventListener("click",()=>{isSample=false;fill({});photo=null;$("#photo").value="";step=0;maxStep=0;render();form.elements.name.focus();});
 $("#langBtn").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";try{localStorage.setItem("ssb-lang",lang)}catch(e){} if(isSample) loadSample(); render();});
 $("#tabSheet").addEventListener("click",()=>setView("sheet"));
 $("#tabPost").addEventListener("click",()=>setView("post"));
