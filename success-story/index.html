@@ -528,6 +528,7 @@ $("#wordBtn").addEventListener("click",()=>{
 });
 $("#printBtn").addEventListener("click",()=>{if(view!=="sheet")setView("sheet");window.print();});
 
+if(new URLSearchParams(location.search).get("example")==="1"){isSample=true;loadSample();maxStep=5;}
 render();
 </script>
 </body>
