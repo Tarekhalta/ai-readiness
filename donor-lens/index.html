@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Would a Donor Fund This?</title>
+<meta name="description" content="A 10-round game for development and NGO communicators: pick the version of the story a donor would fund, and see why. English and Arabic. By Tarek Halteh.">
+<meta property="og:title" content="Would a donor fund this?">
+<meta property="og:description" content="10 rounds, about 3 minutes. Pick the story a donor would fund and get your Donor Lens score.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400;7..72,500&family=Tajawal:wght@400;500;700;800&family=Noto+Naskh+Arabic:wght@400;500&display=swap">
+<style>
+:root{
+  --page:#DCE6F1; --card:#FFFFFF; --ink:#0E2A47; --muted:#56708C; --line:#C2D1E1; --soft:#EEF3F9;
+  --fund:#12805A; --fund-soft:#E1F3EA; --miss:#B83A2E; --miss-soft:#F8E4E1;
+  --ui:"Familjen Grotesk",system-ui,"Segoe UI",sans-serif; --text:"Literata",Georgia,serif;
+}
+:root[dir="rtl"]{--ui:"Tajawal",system-ui,sans-serif;--text:"Noto Naskh Arabic","Tajawal",serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --page:#0D1B2C; --card:#152841; --ink:#E4ECF6; --muted:#93A9C2; --line:#28405E; --soft:#1A3150;
+  --fund:#4CC492; --fund-soft:#173A33; --miss:#F07D70; --miss-soft:#3D2329; color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.5;min-height:100vh}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--fund);outline-offset:3px}
+.wrap{max-width:1000px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px))}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px}
+.brand{font-weight:700;font-size:15px;text-decoration:none}
+.lang{border:1.5px solid var(--ink);background:transparent;border-radius:999px;padding:7px 16px;font-weight:600;font-size:14px}
+
+/* Intro */
+.intro{max-width:720px;margin:6vh auto 0;text-align:center}
+.intro h1{font-size:clamp(40px,7vw,76px);line-height:.98;letter-spacing:-.03em;margin:0 0 18px;font-weight:700;text-wrap:balance}
+:root[dir="rtl"] .intro h1{letter-spacing:0;line-height:1.2}
+.intro p{font-size:19px;color:var(--muted);margin:0 auto 30px;max-width:46ch}
+.start{border:none;background:var(--ink);color:var(--page);border-radius:14px;padding:16px 34px;font-size:18px;font-weight:700}
+.meta{margin-top:16px;font-size:14px;color:var(--muted)}
+.demo{display:flex;justify-content:center;gap:14px;margin:44px auto 0;max-width:520px}
+.demo div{flex:1;height:120px;background:var(--card);border-radius:12px;position:relative;box-shadow:0 1px 0 var(--line)}
+.demo div::before,.demo div::after{content:"";position:absolute;inset-inline:16px;height:8px;border-radius:4px;background:var(--soft)}
+.demo div::before{top:20px}.demo div::after{top:38px;inset-inline-end:40%}
+.demo .st{position:absolute;inset:auto 0 22px 0;margin:auto;width:max-content;transform:rotate(-10deg)}
+
+/* Round */
+.hud{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.dots{display:flex;gap:6px;flex:1}
+.dots span{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.dots span.r{background:var(--fund)}.dots span.w{background:var(--miss)}.dots span.c{background:var(--ink)}
+.hud .n{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
+.q{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.q h2{font-size:clamp(24px,3.4vw,32px);margin:0;font-weight:700;letter-spacing:-.01em}
+.kind{font-size:14px;color:var(--muted)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:720px){.pair{grid-template-columns:1fr}}
+.opt{position:relative;text-align:start;background:var(--card);border:2px solid transparent;border-radius:16px;padding:22px 22px 26px;box-shadow:0 1px 0 var(--line),0 14px 30px -22px rgba(14,42,71,.5);display:flex;flex-direction:column;gap:12px;min-height:200px;transition:border-color .15s}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt .lab{font-size:13px;font-weight:600;color:var(--muted);display:flex;justify-content:space-between}
+.opt .key{border:1.5px solid var(--line);border-radius:6px;padding:0 7px;font-size:12px}
+.opt .tx{font-family:var(--text);font-size:18px;line-height:1.6}
+:root[dir="rtl"] .opt .tx{font-size:19px;line-height:1.9}
+.opt.headline .tx{font-family:var(--ui);font-size:24px;font-weight:700;line-height:1.25}
+.opt.better{border-color:var(--fund);background:linear-gradient(var(--fund-soft),var(--fund-soft)) padding-box}
+.opt.faded{opacity:.62}
+.opt.picked-weak .tx,.opt.picked-weak .lab{opacity:.55}
+@media (hover:none){.opt .key{display:none}}
+.opt .tag{font-size:13px;font-weight:700;color:var(--fund);margin-top:auto}
+
+/* The stamp: the one orchestrated moment */
+.stamp{position:absolute;top:50%;left:50%;translate:-50% -50%;rotate:-11deg;pointer-events:none;
+  font-family:var(--ui);font-weight:700;font-size:30px;letter-spacing:.08em;text-transform:uppercase;
+  padding:6px 18px;border:4px solid currentColor;border-radius:10px;outline:2px solid currentColor;outline-offset:3px;
+  background:color-mix(in srgb,var(--card) 70%,transparent);animation:slam .32s cubic-bezier(.2,1.6,.4,1) both}
+:root[dir="rtl"] .stamp{letter-spacing:0;font-size:32px}
+.stamp.ok{color:var(--fund)}.stamp.no{color:var(--miss)}
+@keyframes slam{0%{opacity:0;scale:2.3}60%{opacity:1}100%{opacity:1;scale:1}}
+@media (prefers-reduced-motion:reduce){.stamp{animation:none}}
+
+.reveal{margin-top:18px;background:var(--card);border-radius:16px;padding:20px 22px;display:grid;gap:8px;border-inline-start:6px solid var(--fund)}
+.reveal.no{border-inline-start-color:var(--miss)}
+.reveal .verdict{font-weight:700;font-size:19px}
+.reveal .pr{font-size:14px;color:var(--muted)}
+.reveal p{margin:0;font-size:16.5px}
+.next{justify-self:end;border:none;background:var(--ink);color:var(--page);border-radius:12px;padding:12px 26px;font-weight:700;font-size:16px;margin-top:6px}
+
+/* Results */
+.res{max-width:760px;margin:2vh auto 0}
+.score{display:flex;align-items:center;gap:26px;flex-wrap:wrap;background:var(--card);border-radius:20px;padding:28px;margin-bottom:16px}
+.big{font-size:clamp(72px,12vw,120px);line-height:.9;font-weight:700;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.big small{font-size:.35em;color:var(--muted);letter-spacing:0}
+.title{font-size:clamp(26px,4vw,36px);font-weight:700;line-height:1.1;margin:0 0 6px}
+.score p{margin:0;color:var(--muted);font-size:17px;max-width:38ch}
+.skills{background:var(--card);border-radius:20px;padding:22px 24px;margin-bottom:16px}
+.skills h3{margin:0 0 12px;font-size:17px}
+.skills ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+@media (max-width:560px){.skills ul{grid-template-columns:1fr}}
+.skills li{display:flex;gap:10px;align-items:center;font-size:15px}
+.skills li i{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;color:#fff}
+.skills li.r i{background:var(--fund)}.skills li.w i{background:var(--miss)}
+.skills li.w span{color:var(--muted)}
+.share{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
+.share button,.share a{border:1.5px solid var(--ink);background:transparent;border-radius:12px;padding:12px 18px;font-weight:700;font-size:15px;text-decoration:none}
+.share .primary{background:var(--ink);color:var(--page)}
+.status{align-self:center;font-size:14px;color:var(--fund)}
+.more{background:var(--soft);border-radius:16px;padding:18px 20px;font-size:15.5px}
+.more a{font-weight:700}
+footer{margin-top:40px;font-size:13.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="https://tarekhalteh.com" target="_blank" rel="noopener">Tarek Halteh</a>
+    <button class="lang" id="langBtn" type="button"></button>
+  </header>
+
+  <section class="intro" id="intro">
+    <h1 data-t="title"></h1>
+    <p data-t="lede"></p>
+    <button class="start" id="startBtn" type="button" data-t="start"></button>
+    <div class="meta" data-t="meta"></div>
+    <div class="demo" aria-hidden="true"><div></div><div><span class="stamp ok st" data-t="stamp" style="animation:none;font-size:22px"></span></div></div>
+  </section>
+
+  <section id="game" hidden>
+    <div class="hud"><div class="dots" id="dots"></div><span class="n" id="roundN"></span></div>
+    <div class="q"><h2 data-t="ask"></h2><span class="kind" id="kind"></span></div>
+    <div class="pair" id="pair"></div>
+    <div class="reveal" id="reveal" hidden aria-live="polite">
+      <div class="verdict" id="verdict"></div>
+      <div class="pr" id="principle"></div>
+      <p id="why"></p>
+      <button class="next" id="nextBtn" type="button"></button>
+    </div>
+  </section>
+
+  <section class="res" id="results" hidden>
+    <div class="score">
+      <div class="big" id="bigScore"></div>
+      <div><div class="title" id="rTitle"></div><p id="rSub"></p></div>
+    </div>
+    <div class="skills"><h3 data-t="skillsH"></h3><ul id="skills"></ul></div>
+    <div class="share">
+      <a class="primary" id="liBtn" target="_blank" rel="noopener" data-t="linkedin"></a>
+      <button type="button" id="copyBtn" data-t="copy"></button>
+      <button type="button" id="againBtn" data-t="again"></button>
+      <span class="status" id="status" role="status"></span>
+    </div>
+    <div class="more"><span data-t="moreText"></span> <a href="../success-story/" data-t="moreLink"></a></div>
+  </section>
+
+  <footer data-t="footer"></footer>
+</div>
+
+<script>
+const URL_SELF="https://tarekhalta.github.io/ai-readiness/donor-lens/";
+const T={
+ en:{lang:"العربية",title:"Would a donor fund this?",lede:"Ten rounds. Each one shows two versions of the same story. Pick the one a donor would fund, and see why.",
+  start:"Start the game",meta:"About 3 minutes. Built for NGO and development communicators.",stamp:"Funded",
+  ask:"Which version would a donor fund?",round:"Round {n} of 10",next:"Next round",finish:"See my score",
+  right:"Right call.",wrong:"A donor would fund the other one.",principle:"Principle: ",
+  kinds:{report:"Report excerpt",opening:"Story opening",result:"Result line",quote:"Quote",headline:"Headline",closing:"Closing line"},
+  skillsH:"Your Donor Lens, principle by principle",better:"Stronger version",
+  titles:[["Report Writer","You know the program well. Now let the people in it do the talking."],["Rising Storyteller","You spot most weak stories. Sharpen evidence and voice to catch the rest."],["Program Storyteller","Donors would read your reports to the end."],["Donor Whisperer","A perfect score. Your stories get funded."]],
+  linkedin:"Share on LinkedIn",copy:"Copy my result",copied:"Copied. Paste it into your post.",again:"Play again",
+  shareText:"I scored {s}/10 on \"Would a donor fund this?\" and earned the title {t}. Can you beat it? {u}",
+  moreText:"Want to write stories like the stronger versions?",moreLink:"Try the Success Story Builder",
+  footer:"Built by Tarek Halteh, communications consultant with 14 years in development programs and the private sector across MENA. The people in these stories are fictional."},
+ ar:{lang:"English",title:"هل ستموّل الجهة المانحة هذا؟",lede:"عشر جولات. في كل جولة نسختان من القصة نفسها. اختر النسخة التي ستموّلها الجهة المانحة، واعرف السبب.",
+  start:"ابدأ اللعبة",meta:"حوالي 3 دقائق. مصممة لمسؤولي الاتصال في المنظمات وبرامج التنمية.",stamp:"مُموَّل",
+  ask:"أي نسخة ستموّلها الجهة المانحة؟",round:"الجولة {n} من 10",next:"الجولة التالية",finish:"اعرض نتيجتي",
+  right:"اختيار صحيح.",wrong:"الجهة المانحة ستموّل النسخة الأخرى.",principle:"المبدأ: ",
+  kinds:{report:"مقتطف من تقرير",opening:"افتتاحية قصة",result:"سطر النتيجة",quote:"اقتباس",headline:"عنوان",closing:"سطر الختام"},
+  skillsH:"عدستك المانحة، مبدأً بمبدأ",better:"النسخة الأقوى",
+  titles:[["كاتب تقارير","أنت تعرف البرنامج جيداً. دع الناس فيه يتحدثون الآن."],["راوٍ صاعد","تلتقط معظم القصص الضعيفة. عزّز الدليل والصوت لتلتقط الباقي."],["راوي برامج","ستقرأ الجهات المانحة تقاريرك حتى النهاية."],["خبير المانحين","نتيجة كاملة. قصصك تحصل على التمويل."]],
+  linkedin:"شارك على LinkedIn",copy:"انسخ نتيجتي",copied:"تم النسخ. الصقها في منشورك.",again:"العب مجدداً",
+  shareText:"حصلت على {s}/10 في لعبة «هل ستموّل الجهة المانحة هذا؟» ولقب {t}. هل تستطيع التفوق علي؟ {u}",
+  moreText:"هل تريد كتابة قصص مثل النسخ الأقوى؟",moreLink:"جرّب أداة بناء قصص النجاح",
+  footer:"من إعداد طارق الحلتة، مستشار اتصال بخبرة 14 عاماً في برامج التنمية والقطاع الخاص في المنطقة. الأشخاص في هذه القصص خياليون."}
+};
+
+const R=[
+ {kind:"report",p:["Outcomes over activities","النتائج قبل الأنشطة"],
+  w:["In the second quarter, the project trained 120 teachers across 14 schools, held 36 workshops and distributed 2,400 reading kits to classrooms.","خلال الربع الثاني، درّب المشروع 120 معلماً في 14 مدرسة، ونظّم 36 ورشة عمل، ووزّع 2,400 حقيبة قراءة على الصفوف."],
+  s:["Teachers trained in the spring now spend less time preparing lessons, and in their classrooms the share of grade 3 pupils reading at grade level rose from 38% to 57% in one school year.","يقضي المعلمون الذين تدرّبوا في الربيع وقتاً أقل في التحضير، وفي صفوفهم ارتفعت نسبة طلبة الصف الثالث القادرين على القراءة بمستوى صفهم من 38% إلى 57% خلال عام دراسي واحد."],
+  why:["Activities show you were busy. Donors fund change: what is different for people because of your work.","الأنشطة تُظهر أنكم كنتم منشغلين. أما الجهات المانحة فتموّل التغيير: ما الذي اختلف في حياة الناس بفضل عملكم."]},
+ {kind:"opening",p:["A real person","شخص حقيقي"],
+  w:["Many women in the community benefited greatly from the program and reported improvements in their lives and livelihoods.","استفادت نساء كثيرات في المجتمع المحلي بشكل كبير من البرنامج، وأفدن بتحسّن في حياتهن ومصادر رزقهن."],
+  s:["Hiba, 29, used to sell embroidered pillowcases to two neighbors. Today she supplies three shops in Madaba and pays her children's school fees on time.","كانت هبة، 29 عاماً، تبيع أغطية الوسائد المطرزة لجارتين فقط. اليوم تزوّد ثلاثة محلات في مادبا، وتدفع رسوم مدرسة أطفالها في موعدها."],
+  why:["One specific person is easier to picture, believe and remember than a crowd. Readers connect with faces, not categories.","من الأسهل تخيّل شخص واحد محدد وتصديقه وتذكّره أكثر من مجموعة. القرّاء يتفاعلون مع الوجوه لا مع الفئات."]},
+ {kind:"report",p:["Plain language","لغة واضحة"],
+  w:["The intervention leveraged multi-stakeholder synergies to strengthen the capacity of local actors and enhance an enabling environment for sustainable outcomes.","استفاد التدخل من أوجه التآزر بين أصحاب المصلحة المتعددين لتعزيز قدرات الفاعلين المحليين وتحسين البيئة التمكينية لتحقيق نتائج مستدامة."],
+  s:["We brought the municipality, three schools and local businesses to the same table. Together they now run a summer jobs scheme for 80 young people.","جمعنا البلدية وثلاث مدارس وأصحاب أعمال محليين على طاولة واحدة. واليوم يديرون معاً برنامج وظائف صيفية لـ80 شاباً وشابة."],
+  why:["Jargon hides what actually happened. If a busy reader can't picture it, they can't fund it.","المصطلحات المعقدة تُخفي ما حدث فعلاً. إذا لم يستطع القارئ المشغول تخيّله، فلن يموّله."]},
+ {kind:"result",p:["Evidence","الدليل"],
+  w:["The program significantly improved the economic situation of participating households.","حسّن البرنامج الوضع الاقتصادي للأسر المشاركة بشكل ملحوظ."],
+  s:["Six months after the program, 64% of participating households earned more each month, with average income rising from 180 to 260 JOD.","بعد ستة أشهر من البرنامج، ارتفع الدخل الشهري لـ64% من الأسر المشاركة، إذ زاد متوسط الدخل من 180 إلى 260 ديناراً."],
+  why:["\"Significantly\" is a claim. A number with a baseline and a timeframe is evidence.","كلمة «ملحوظ» مجرد ادعاء. أما الرقم مع خط أساس وإطار زمني فهو دليل."]},
+ {kind:"quote",p:["A real voice","صوت حقيقي"],
+  w:["“This program was very useful and beneficial. I would like to thank the donor and the implementing partner for their support.”","«كان هذا البرنامج مفيداً جداً. أودّ أن أشكر الجهة المانحة والشريك المنفّذ على دعمهم.»"],
+  s:["“Before, I hid my notebook when customers came. Now I show them my price list, and they don't argue.”","«في السابق كنت أُخفي دفتري حين يأتي الزبائن. اليوم أريهم قائمة أسعاري، ولا يجادلونني.»"],
+  why:["Thank-you quotes sound scripted. A specific, personal detail sounds true and shows the change in the person's own words.","اقتباسات الشكر تبدو ملقّنة. أما التفصيلة الشخصية المحددة فتبدو صادقة وتُظهر التغيير بكلمات الشخص نفسه."]},
+ {kind:"opening",p:["Dignity","الكرامة"],
+  w:["Ahmad, a poor and helpless refugee, had lost everything until the project came to his rescue and gave him a new life.","أحمد، لاجئ فقير وعاجز، فقد كل شيء إلى أن جاء المشروع لإنقاذه ومنحه حياة جديدة."],
+  s:["When Ahmad arrived in Mafraq, he knew how to repair engines but had no tools. With a small grant, he reopened his workshop and now trains two apprentices.","حين وصل أحمد إلى المفرق، كان يجيد إصلاح المحركات لكنه لم يملك أدوات. بمنحة صغيرة أعاد فتح ورشته، وهو اليوم يدرّب متدربَين اثنين."],
+  why:["Pity framing makes people passive. Show their skills and choices, with the program as support, not savior.","خطاب الشفقة يجعل الناس سلبيين. أظهروا مهاراتهم وقراراتهم، وقدّموا البرنامج كداعم لا كمنقذ."]},
+ {kind:"result",p:["Honest claims","ادعاءات صادقة"],
+  w:["Thanks to the program, youth unemployment in the district has been eliminated.","بفضل البرنامج، تم القضاء على بطالة الشباب في اللواء."],
+  s:["Of 300 graduates, 112 found jobs within six months, and four local employers have asked to take part in the next round.","من بين 300 خريج، حصل 112 على وظائف خلال ستة أشهر، وطلب أربعة أصحاب عمل محليين المشاركة في الدورة القادمة."],
+  why:["Overclaiming destroys trust. Donors know change has many causes, so precise, modest results are more convincing.","المبالغة تهدم الثقة. الجهات المانحة تعرف أن للتغيير أسباباً كثيرة، لذا فالنتائج الدقيقة والمتواضعة أكثر إقناعاً."]},
+ {kind:"headline",p:["Headlines","العناوين"],
+  w:["Quarterly Activity Update: Livelihoods Component, Q3","تحديث الأنشطة الربعي: مكوّن سبل العيش، الربع الثالث"],
+  s:["From one sewing machine to a team of six","من ماكينة خياطة واحدة إلى فريق من ستة أشخاص"],
+  why:["A headline should tell a story of change, not file a report. Most readers decide in two seconds whether to keep reading.","يجب أن يروي العنوان قصة تغيير، لا أن يؤرشف تقريراً. معظم القرّاء يقررون خلال ثانيتين إن كانوا سيكملون القراءة."]},
+ {kind:"opening",p:["Lead with the change","ابدأ بالتغيير"],
+  w:["The project was launched in 2024 in partnership with the Ministry. After a needs assessment and a selection process, the training began. Participants later reported higher confidence.","أُطلق المشروع عام 2024 بالشراكة مع الوزارة. وبعد تقييم للاحتياجات وعملية اختيار، بدأ التدريب. وأفاد المشاركون لاحقاً بارتفاع ثقتهم بأنفسهم."],
+  s:["Rania now runs the only bakery in her village. Two years ago, she had never sold a loaf. Here is what changed.","تدير رانيا اليوم المخبز الوحيد في قريتها. قبل عامين، لم تكن قد باعت رغيفاً واحداً. إليكم ما الذي تغيّر."],
+  why:["Open with the change, then explain how it happened. A timeline that starts on launch day buries the point.","ابدؤوا بالتغيير ثم اشرحوا كيف حدث. السرد الزمني منذ يوم الإطلاق يدفن الفكرة الأساسية."]},
+ {kind:"closing",p:["Lasting change","تغيير مستدام"],
+  w:["The project officially closed in June, and all planned activities were completed on schedule.","أُغلق المشروع رسمياً في حزيران، وتم تنفيذ جميع الأنشطة المخطط لها في موعدها."],
+  s:["When funding ended in June, the women's cooperative kept going. The municipality now covers its rent, and members train new women every season.","حين انتهى التمويل في حزيران، استمرت الجمعية التعاونية النسائية. تتكفّل البلدية اليوم بإيجارها، وتدرّب العضوات نساءً جديدات كل موسم."],
+  why:["Donors want to know the change outlives the grant. Show who carries it forward.","تريد الجهات المانحة أن تعرف أن التغيير يستمر بعد انتهاء المنحة. أظهروا من سيحمله إلى الأمام."]}
+];
+
+let lang="en", order=[], i=0, results=[], sides=[], answered=false, screen="intro";
+try{const l=localStorage.getItem("dl-lang"); if(l==="ar"||l==="en") lang=l;}catch(e){}
+const qpl=new URLSearchParams(location.search).get("lang"); if(qpl==="ar"||qpl==="en") lang=qpl;
+const $=s=>document.querySelector(s);
+const L=()=>lang==="en"?0:1;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function shuffle(a){for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a}
+function newGame(){order=shuffle([...R.keys()]); sides=order.map(()=>Math.random()<.5); i=0; results=[]; show("game"); drawRound();}
+function show(s){screen=s; ["intro","game","results"].forEach(id=>$("#"+id).hidden=id!==s); window.scrollTo({top:0});}
+
+function drawDots(){
+  $("#dots").innerHTML=R.map((_,k)=>`<span class="${k<results.length?(results[k]?"r":"w"):(k===i?"c":"")}"></span>`).join("");
+  $("#roundN").textContent=T[lang].round.replace("{n}",i+1);
+}
+function drawRound(){
+  const t=T[lang], r=R[order[i]], strongFirst=sides[i];
+  answered=false; $("#reveal").hidden=true;
+  $("#kind").textContent=t.kinds[r.kind];
+  const opts=strongFirst?[["s",r.s],["w",r.w]]:[["w",r.w],["s",r.s]];
+  $("#pair").innerHTML=opts.map(([k,txt],n)=>`<button type="button" class="opt ${r.kind==="headline"?"headline":""}" data-k="${k}"><span class="lab"><span>${lang==="en"?(n?"Version B":"Version A"):(n?"النسخة ب":"النسخة أ")}</span><span class="key" aria-hidden="true">${n?"B":"A"}</span></span><span class="tx">${esc(txt[L()])}</span></button>`).join("");
+  drawDots();
+}
+function pick(btn){
+  if(answered) return; answered=true;
+  const t=T[lang], r=R[order[i]], ok=btn.dataset.k==="s";
+  results.push(ok);
+  document.querySelectorAll(".opt").forEach(b=>{b.disabled=true; if(b.dataset.k==="s"){b.classList.add("better");b.insertAdjacentHTML("beforeend",`<span class="tag">${t.better}</span>`)} else if(b!==btn) b.classList.add("faded"); else b.classList.add("picked-weak");});
+  btn.insertAdjacentHTML("beforeend",`<span class="stamp ${ok?"ok":"no"}">${t.stamp}</span>`);
+  $("#verdict").textContent=ok?t.right:t.wrong;
+  $("#principle").textContent=t.principle+r.p[L()];
+  $("#why").textContent=r.why[L()];
+  $("#reveal").classList.toggle("no",!ok);
+  $("#nextBtn").textContent=i===R.length-1?t.finish:t.next;
+  $("#reveal").hidden=false; drawDots();
+  setTimeout(()=>{const rv=$("#reveal").getBoundingClientRect(); if(rv.bottom>window.innerHeight) $("#reveal").scrollIntoView({behavior:"smooth",block:"end"}); $("#nextBtn").focus({preventScroll:true});},350);
+}
+function next(){ if(i<R.length-1){i++;drawRound();window.scrollTo({top:0,behavior:"smooth"});} else finish(); }
+
+function tier(s){return s<=4?0:s<=7?1:s<=9?2:3}
+function finish(){
+  show("results"); drawResults();
+}
+function drawResults(){
+  const t=T[lang], s=results.filter(Boolean).length, tt=t.titles[tier(s)];
+  $("#bigScore").innerHTML=`${s}<small>/10</small>`;
+  $("#rTitle").textContent=tt[0]; $("#rSub").textContent=tt[1];
+  $("#skills").innerHTML=R.map((r,k)=>{const ok=results[order.indexOf(k)];return `<li class="${ok?"r":"w"}"><i aria-hidden="true">${ok?"✓":"✕"}</i><span>${esc(r.p[L()])}</span></li>`}).join("");
+  $("#liBtn").href="https://www.linkedin.com/sharing/share-offsite/?url="+encodeURIComponent(URL_SELF);
+}
+function shareText(){const t=T[lang], s=results.filter(Boolean).length; return t.shareText.replace("{s}",s).replace("{t}",t.titles[tier(s)][0]).replace("{u}",URL_SELF);}
+
+function render(){
+  const t=T[lang];
+  document.documentElement.lang=lang; document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+  document.querySelectorAll("[data-t]").forEach(el=>el.textContent=t[el.dataset.t]);
+  $("#langBtn").textContent=t.lang;
+  if(screen==="game"){ if(answered){const k=results.length-1; drawRound(); /* redraw answered state */ const b=[...document.querySelectorAll(".opt")].find(x=>(x.dataset.k==="s")===results[k]); results.pop(); pick(b);} else drawRound(); }
+  if(screen==="results") drawResults();
+}
+
+$("#startBtn").addEventListener("click",newGame);
+$("#againBtn").addEventListener("click",newGame);
+$("#nextBtn").addEventListener("click",next);
+$("#pair").addEventListener("click",e=>{const b=e.target.closest(".opt"); if(b) pick(b);});
+document.addEventListener("keydown",e=>{
+  if(screen!=="game"||e.metaKey||e.ctrlKey||e.altKey) return;
+  const k=e.key.toLowerCase(), opts=document.querySelectorAll(".opt");
+  if(!answered&&(k==="a"||k==="1")){opts[0].click();}
+  else if(!answered&&(k==="b"||k==="2")){opts[1].click();}
+});
+$("#langBtn").addEventListener("click",()=>{lang=lang==="en"?"ar":"en";try{localStorage.setItem("dl-lang",lang)}catch(e){};render();});
+$("#copyBtn").addEventListener("click",()=>{
+  const txt=shareText(), done=()=>{$("#status").textContent=T[lang].copied;setTimeout(()=>$("#status").textContent="",2500)};
+  navigator.clipboard.writeText(txt).then(done).catch(()=>{const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done()}catch(e){};ta.remove();});
+});
+render();
+</script>
+</body>
+</html>
